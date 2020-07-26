@@ -16,7 +16,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  String name, mobile, imageUrl;
+  String name,
+      mobile,
+      imageUrl =
+          "https://cdn4.iconfinder.com/data/icons/avatars-21/512/avatar-circle-human-female-black-7-512.png";
   double amount = 0.0, cashIn = 0.0, cashOut = 0.0;
   int tabIndex = 0;
   Map<dynamic, dynamic> statement, cashin, cashout;
@@ -26,9 +29,9 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    super.initState();
     getUser();
     getData();
-    super.initState();
   }
 
   @override
@@ -39,10 +42,11 @@ class _HomeState extends State<Home> {
   Future<void> getUser() async {
     sp = await SharedPreferences.getInstance();
     setState(() {
+      this.imageUrl = sp.getString('imageurl');
       this.name = sp.getString('name');
       this.mobile = sp.getString('mobile');
-      this.imageUrl = sp.getString('image');
     });
+    print(imageUrl);
   }
 
   void getData() {
@@ -109,7 +113,7 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.grey[50],
         body: Column(
           children: <Widget>[
-            walletTop(name, mobile, imageUrl, amount, cashIn, cashOut,context),
+            walletTop(name, mobile, imageUrl, amount, cashIn, cashOut, context),
             walletTab(tabIndex),
             walletPost(tabIndex, list),
           ],
@@ -128,6 +132,15 @@ class _HomeState extends State<Home> {
                   ),
                   onPressed: () {
                     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                  }),
+              IconButton(
+                  icon: Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    sp.clear();
+                    Navigator.pop(context);
                   }),
               IconButton(
                   icon: Icon(
@@ -292,7 +305,8 @@ Widget post(values, key) => Card(
                 ],
               ))),
     );
-Widget walletTop(name, mobile, imageUrl, amount, cashIn, cashOut,context) => Container(
+Widget walletTop(name, mobile, imageUrl, amount, cashIn, cashOut, context) =>
+    Container(
       width: double.infinity,
       height: MediaQuery.of(context).size.height / 2.6,
       color: Colors.green,
@@ -415,24 +429,24 @@ class UserInfo extends StatelessWidget {
 }
 
 Widget avater(imageUrl) => AvatarGlow(
-      endRadius: 60.0,
-      duration: Duration(milliseconds: 2000),
-      repeat: true,
-      showTwoGlows: true,
-      repeatPauseDuration: Duration(milliseconds: 100),
-      child: Material(
-        elevation: 8.0,
-        shape: CircleBorder(),
-        child: CircleAvatar(
-          backgroundColor: Colors.grey[100],
-          child: imageUrl != null
-              ? Image.network(imageUrl)
-              : Image.network(
-                  'https://cdn4.iconfinder.com/data/icons/avatars-21/512/avatar-circle-human-female-black-7-512.png',
-                  height: 55,
-                  fit: BoxFit.fill,
-                ),
-          radius: 25.0,
+    endRadius: 60.0,
+    duration: Duration(milliseconds: 2000),
+    repeat: true,
+    showTwoGlows: true,
+    repeatPauseDuration: Duration(milliseconds: 100),
+    child: Material(
+      elevation: 5.0,
+      shape: CircleBorder(),
+      child: CircleAvatar(
+        backgroundColor: Colors.white,
+        radius: 31.0,
+        child: ClipOval(
+          child: Image.network(
+            imageUrl,
+            width: 60,
+            height: 60,
+            fit: BoxFit.fill,
+          ),
         ),
       ),
-    );
+    ));
