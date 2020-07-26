@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "680715643848",
+    "firebase_url": "https://wallet-176a7.firebaseio.com",
+    "project_id": "wallet-176a7",
+    "storage_bucket": "wallet-176a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680715643848:android:762149b88c7a13cf4e2efd",
+        "android_client_info": {
+          "package_name": "com.chandan.wallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "680715643848-de556f1lshhnjhrfil8cn4f8l078r4pr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3Ztf82Ksez_onQ5OogZndw1WpjpvOT9c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "680715643848-de556f1lshhnjhrfil8cn4f8l078r4pr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
