@@ -304,7 +304,7 @@ Widget walletTop(name, mobile, imageUrl, amount, cashIn, cashOut,context) => Con
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Avater(imageUrl),
+              avater(imageUrl),
               UserInfo(name, mobile),
             ],
           ),
@@ -414,7 +414,7 @@ class UserInfo extends StatelessWidget {
   }
 }
 
-Widget Avater(imageUrl) => AvatarGlow(
+Widget avater(imageUrl) => AvatarGlow(
       endRadius: 60.0,
       duration: Duration(milliseconds: 2000),
       repeat: true,

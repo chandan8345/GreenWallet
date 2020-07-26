@@ -45,9 +45,9 @@ class _CashInState extends State<CashIn> {
   }
 
   void submit() {
+    if (_formKey.currentState.validate()) {
     pr.update(message: 'Please Wait');
     pr.show();
-    if (_formKey.currentState.validate()) {
       postData.push().set({
         'mobile': mobile,
         'cashtype': cashType,
