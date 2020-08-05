@@ -1,6 +1,6 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -16,22 +16,19 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  String name,
-      mobile,
-      imageUrl =
-          "https://cdn4.iconfinder.com/data/icons/avatars-21/512/avatar-circle-human-female-black-7-512.png";
+  String name, mobile, imageUrl;
   double amount = 0.0, cashIn = 0.0, cashOut = 0.0;
   int tabIndex = 0;
   Map<dynamic, dynamic> statement, cashin, cashout;
   List list;
   SharedPreferences sp;
-  final postData = FirebaseDatabase.instance.reference().child('post');
+  final db = Firestore.instance;
 
   @override
   void initState() {
-    super.initState();
     getUser();
     getData();
+    super.initState();
   }
 
   @override
@@ -42,69 +39,76 @@ class _HomeState extends State<Home> {
   Future<void> getUser() async {
     sp = await SharedPreferences.getInstance();
     setState(() {
-      this.imageUrl = sp.getString('imageurl');
       this.name = sp.getString('name');
       this.mobile = sp.getString('mobile');
+      this.imageUrl = sp.getString('image');
     });
-    print(imageUrl);
   }
 
-  void getData() {
-    postData.once().then((DataSnapshot data) {
-      setState(() {
-        this.statement = data.value;
-      });
+  Future<void> getData() async {
+    int i=0;
+    var result = db
+        .collection('post')
+        .snapshots();
+    result.forEach((v){
+      print(v.documents[i]['name']);
+      i+=1;
     });
-    var cashinQuery = postData.orderByChild('cashtype').equalTo("IN");
-    cashinQuery.once().then((DataSnapshot data) {
-      setState(() {
-        this.cashin = data.value;
-      });
-      cashin != null
-          ? cashin.forEach((key, value) {
-              setState(() {
-                this.cashIn += double.parse(cashin[key]['amount']);
-              });
-            })
-          : this.cashIn = 0.0;
-    });
-    var cashOutQuery = postData.orderByChild('cashtype').equalTo("OUT");
-    cashOutQuery.once().then((DataSnapshot data) {
-      setState(() {
-        this.cashout = data.value;
-      });
-      cashout != null
-          ? cashout.forEach((key, value) {
-              setState(() {
-                this.cashOut += double.parse(cashout[key]['amount']);
-              });
-            })
-          : this.cashOut = 0.0;
-      setState(() {
-        double a = cashOut != 0.0 || cashIn != 0.0 ? cashIn - cashOut : cashIn;
-        this.amount = a;
-      });
-    });
+    // postData.once().then((DataSnapshot data) {
+    //   setState(() {
+    //     this.statement = data.value;
+    //   });
+    // });
+    // var cashinQuery = postData.orderByChild('cashtype').equalTo("IN");
+    // cashinQuery.once().then((DataSnapshot data) {
+    //   setState(() {
+    //     this.cashin = data.value;
+    //   });
+    //   cashin != null
+    //       ? cashin.forEach((key, value) {
+    //           setState(() {
+    //             this.cashIn += double.parse(cashin[key]['amount']);
+    //           });
+    //         })
+    //       : this.cashIn = 0.0;
+    // });
+    // var cashOutQuery = postData.orderByChild('cashtype').equalTo("OUT");
+    // cashOutQuery.once().then((DataSnapshot data) {
+    //   setState(() {
+    //     this.cashout = data.value;
+    //   });
+    //   cashout != null
+    //       ? cashout.forEach((key, value) {
+    //           setState(() {
+    //             this.cashOut += double.parse(cashout[key]['amount']);
+    //           });
+    //         })
+    //       : this.cashOut = 0.0;
+    //   setState(() {
+    //     double a = cashOut != 0.0 || cashIn != 0.0 ? cashIn - cashOut : cashIn;
+    //     this.amount = a;
+    //   });
+    // });
   }
 
   void getUpdate() {
-    postData.once().then((DataSnapshot data) {
-      setState(() {
-        this.statement = data.value;
-      });
-    });
-    var cashinQuery = postData.orderByChild('cashtype').equalTo("IN");
-    cashinQuery.once().then((DataSnapshot data) {
-      setState(() {
-        this.cashin = data.value;
-      });
-    });
-    var cashOutQuery = postData.orderByChild('cashtype').equalTo("OUT");
-    cashOutQuery.once().then((DataSnapshot data) {
-      setState(() {
-        this.cashout = data.value;
-      });
-    });
+    // postData.once().then((DataSnapshot data) {
+    //   setState(() {
+    //     this.statement = data.value;
+    //   });
+    // });
+    // var cashinQuery = postData.orderByChild('cashtype').equalTo("IN");
+    // cashinQuery.once().then((DataSnapshot data) {
+    //   setState(() {
+    //     this.cashin = data.value;
+    //   });
+    // });
+    // var cashOutQuery = postData.orderByChild('cashtype').equalTo("OUT");
+    // cashOutQuery.once().then((DataSnapshot data) {
+    //   setState(() {
+    //     this.cashout = data.value;
+    //   });
+    // });
   }
 
   @override
@@ -113,9 +117,9 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.grey[50],
         body: Column(
           children: <Widget>[
-            walletTop(name, mobile, imageUrl, amount, cashIn, cashOut, context),
-            walletTab(tabIndex),
-            walletPost(tabIndex, list),
+            // walletTop(name, mobile, imageUrl, amount, cashIn, cashOut, context),
+            // walletTab(tabIndex),
+            // walletPost(tabIndex, list),
           ],
         ),
         floatingActionButton: FabCircularMenu(
@@ -132,15 +136,6 @@ class _HomeState extends State<Home> {
                   ),
                   onPressed: () {
                     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  }),
-              IconButton(
-                  icon: Icon(
-                    Icons.refresh,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    sp.clear();
-                    Navigator.pop(context);
                   }),
               IconButton(
                   icon: Icon(
@@ -318,7 +313,7 @@ Widget walletTop(name, mobile, imageUrl, amount, cashIn, cashOut, context) =>
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              avater(imageUrl),
+              Avater(imageUrl),
               UserInfo(name, mobile),
             ],
           ),
@@ -428,25 +423,25 @@ class UserInfo extends StatelessWidget {
   }
 }
 
-Widget avater(imageUrl) => AvatarGlow(
-    endRadius: 60.0,
-    duration: Duration(milliseconds: 2000),
-    repeat: true,
-    showTwoGlows: true,
-    repeatPauseDuration: Duration(milliseconds: 100),
-    child: Material(
-      elevation: 5.0,
-      shape: CircleBorder(),
-      child: CircleAvatar(
-        backgroundColor: Colors.white,
-        radius: 31.0,
-        child: ClipOval(
-          child: Image.network(
-            imageUrl,
-            width: 60,
-            height: 60,
-            fit: BoxFit.fill,
-          ),
+Widget Avater(imageUrl) => AvatarGlow(
+      endRadius: 60.0,
+      duration: Duration(milliseconds: 2000),
+      repeat: true,
+      showTwoGlows: true,
+      repeatPauseDuration: Duration(milliseconds: 100),
+      child: Material(
+        elevation: 8.0,
+        shape: CircleBorder(),
+        child: CircleAvatar(
+          backgroundColor: Colors.grey[100],
+          child: imageUrl != null
+              ? Image.network(imageUrl)
+              : Image.network(
+                  'https://cdn4.iconfinder.com/data/icons/avatars-21/512/avatar-circle-human-female-black-7-512.png',
+                  height: 55,
+                  fit: BoxFit.fill,
+                ),
+          radius: 25.0,
         ),
       ),
-    ));
+    );

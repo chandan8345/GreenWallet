@@ -1,8 +1,9 @@
 import 'package:awesome_button/awesome_button.dart';
 import 'package:calendar_timeline/calendar_timeline.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fradio/fradio.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:wallet/pages/home.dart';
@@ -18,12 +19,17 @@ class _CashInState extends State<CashIn> {
   _CashInState(this.value);
   double value;
   final _formKey = GlobalKey<FormState>();
-  TextEditingController amountCtrl=new TextEditingController();
-  String mobile = "01762981976", amount, cashType = 'IN', inType='Salary', outType='Food';
-  DateTime dateTime;ProgressDialog pr;
+  TextEditingController amountCtrl = new TextEditingController();
+  String mobile = "01762981976",
+      amount,
+      cashType = 'IN',
+      inType = 'Salary',
+      outType = 'Food';
+  DateTime dateTime;
+  ProgressDialog pr;
   DateTime _selectedDate;
+  final db = Firestore.instance;
   int _selectedValueIn = 0, _selectedValueOut = 0;
-  final postData = FirebaseDatabase.instance.reference().child('post');
 
   @override
   void initState() {
@@ -44,21 +50,32 @@ class _CashInState extends State<CashIn> {
     });
   }
 
-  void submit() {
-    if (_formKey.currentState.validate()) {
+  Future<void> submit() async {
     pr.update(message: 'Please Wait');
     pr.show();
-      postData.push().set({
+    if (_formKey.currentState.validate()) {
+      await db.collection("post").add({
         'mobile': mobile,
         'cashtype': cashType,
         'amount': amount,
         'date': _selectedDate.toString(),
         'purpose': cashType != 'OUT' ? this.inType : this.outType,
-      }).then((_) async {
-        pr.update(message: 'Done !!!');
-        pr.hide();
+      }).then((_){
+      pr.hide();
+      toast("Saved Successfuly");
       });
     }
+  }
+
+    void toast(String text) {
+    Fluttertoast.showToast(
+        msg: "$text",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   void reset() {
@@ -75,7 +92,8 @@ class _CashInState extends State<CashIn> {
 
   @override
   Widget build(BuildContext context) {
-    pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true);
+    pr = ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: true);
     return WillPopScope(
         onWillPop: () {
           return Navigator.pushReplacement(
@@ -400,8 +418,7 @@ class _CashInState extends State<CashIn> {
         validator: (val) {
           if (val.isEmpty) {
             return 'Amount cant be Zero';
-          } 
-          else if (double.parse(val) > value && cashType == 'OUT') {
+          } else if (double.parse(val) > value && cashType == 'OUT') {
             return '$val not to greater than $value';
           } else {
             return null;

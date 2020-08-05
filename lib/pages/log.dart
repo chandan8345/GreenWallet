@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
@@ -18,42 +18,47 @@ class _LogState extends State<Log> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController mobileCtrl = new TextEditingController();
   TextEditingController passwordCtrl = new TextEditingController();
-  final usersData = FirebaseDatabase.instance.reference().child('users');
   var mobile, password;
-  ProgressDialog pr;SharedPreferences sp;
+  final db = Firestore.instance;
+  ProgressDialog pr;
+  SharedPreferences sp;
   Map<dynamic, dynamic> statement;
 
   _submit() async {
     if (_formKey.currentState.validate()) {
       pr.update(message: 'Please Wait');
       pr.show();
-      var query = usersData.orderByChild('mobile').equalTo(mobileCtrl.text);
-      query.once().then((DataSnapshot data) {
-        setState(() {
-          this.statement = data.value;
-        });
-        statement != null
-            ? statement.forEach((key, value) {
-                if (statement[key]['password'] == passwordCtrl.text) {
-                  setSharedPreference(statement[key]['name'], statement[key]['mobile'], statement[key]['email'],statement[key]['password'], statement[key]['image']);
-                  pr.hide();
-                  Route route = MaterialPageRoute(builder: (context) => Home());
-                  Navigator.pushReplacement(context, route);
-                }
-              })
-            : toast("Something went wrong");
-        pr.hide();
+      db
+          .collection('users')
+          .where('mobile', isEqualTo: mobile)
+          .where('password', isEqualTo: password)
+          .snapshots()
+          .listen((data) {
+        if (data.documents.length > 0) {
+          pr.hide();
+          setSharedPreference(
+              data.documents[0]['name'],
+              data.documents[0]['mobile'],
+              data.documents[0]['email'],
+              data.documents[0]['password'],
+              data.documents[0]['image']);
+          Route route = MaterialPageRoute(builder: (context) => Home());
+          Navigator.pushReplacement(context, route);
+        } else {
+          pr.hide();
+          toast("Something went wrong");
+        }
       });
     }
   }
 
-  Future setSharedPreference(name,mobile,email,password,image) async {
-    sp=await SharedPreferences.getInstance();
+  Future setSharedPreference(name, mobile, email, password, image) async {
+    sp = await SharedPreferences.getInstance();
     sp.setString('name', name);
     sp.setString('mobile', mobile);
     sp.setString('password', password);
     sp.setString('email', email);
-    sp.setString('imageurl', image);
+    sp.setString('imgurl', image);
     print('sucess store');
   }
 
@@ -63,7 +68,7 @@ class _LogState extends State<Log> {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.green,
         textColor: Colors.white,
         fontSize: 16.0);
   }

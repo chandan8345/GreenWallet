@@ -1,9 +1,11 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -30,6 +32,7 @@ class _RegisterState extends State<Register> {
   ProgressDialog pr;
   final usersData = FirebaseDatabase.instance.reference().child('users');
   final StorageReference storageReference = FirebaseStorage.instance.ref();
+  final db = Firestore.instance;
 
   @override
   void initState() {
@@ -50,15 +53,27 @@ class _RegisterState extends State<Register> {
             storageReference.child("images/").child("$mobile");
         StorageUploadTask task = ref.putFile(_image);
         var imageUrl = await (await task.onComplete).ref.getDownloadURL();
-        usersData.push().set({
-          'name': name,
-          'mobile': mobile,
-          'email': email,
-          'password': password,
-          'image': imageUrl
-        }).then((_) async {
-          pr.update(message: 'Saved');
-          pr.hide();
+        db
+            .collection('users')
+            .where('mobile', isEqualTo: mobile)
+            .getDocuments()
+            .then((data) {
+          print(data.documents.length);
+          if (data.documents.length != 1) {
+            db.collection("users").add({
+              'name': nameCtrl.text,
+              'mobile': mobileCtrl.text,
+              'email': emailCtrl.text,
+              'password': passCtrl.text,
+              'image': imageUrl
+            }).then((_) {
+              pr.hide();
+              toast("Registration Success");
+            });
+          } else {
+            pr.hide();
+            toast("Sorry, Already Exist");
+          }
         });
       }
     } else {
@@ -71,6 +86,17 @@ class _RegisterState extends State<Register> {
     setState(() {
       this._image = img;
     });
+  }
+
+  void toast(String text) {
+    Fluttertoast.showToast(
+        msg: "$text",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   @override
