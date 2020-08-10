@@ -1,6 +1,6 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:connection_verify/connection_verify.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -30,7 +30,6 @@ class _RegisterState extends State<Register> {
   RegExp regex = new RegExp(pattern);
   File _image;
   ProgressDialog pr;
-  final usersData = FirebaseDatabase.instance.reference().child('users');
   final StorageReference storageReference = FirebaseStorage.instance.ref();
   final db = Firestore.instance;
 
@@ -47,34 +46,38 @@ class _RegisterState extends State<Register> {
   Future _submit() async {
     if (_image != null) {
       if (_formKey.currentState.validate()) {
-        pr.update(message: 'Please Wait');
-        pr.show();
-        StorageReference ref =
-            storageReference.child("images/").child("$mobile");
-        StorageUploadTask task = ref.putFile(_image);
-        var imageUrl = await (await task.onComplete).ref.getDownloadURL();
-        db
-            .collection('users')
-            .where('mobile', isEqualTo: mobile)
-            .getDocuments()
-            .then((data) {
-          print(data.documents.length);
-          if (data.documents.length != 1) {
-            db.collection("users").add({
-              'name': nameCtrl.text,
-              'mobile': mobileCtrl.text,
-              'email': emailCtrl.text,
-              'password': passCtrl.text,
-              'image': imageUrl
-            }).then((_) {
+        if (await ConnectionVerify.connectionStatus()) {
+          pr.update(message: 'Please Wait');
+          pr.show();
+          StorageReference ref =
+              storageReference.child("images/").child("$mobile");
+          StorageUploadTask task = ref.putFile(_image);
+          var imageUrl = await (await task.onComplete).ref.getDownloadURL();
+          db
+              .collection('users')
+              .where('mobile', isEqualTo: mobile)
+              .getDocuments()
+              .then((data) {
+            print(data.documents.length);
+            if (data.documents.length != 1) {
+              db.collection("users").add({
+                'name': nameCtrl.text,
+                'mobile': mobileCtrl.text,
+                'email': emailCtrl.text,
+                'password': passCtrl.text,
+                'image': imageUrl
+              }).then((_) {
+                pr.hide();
+                toast("Registration Success");
+              });
+            } else {
               pr.hide();
-              toast("Registration Success");
-            });
-          } else {
-            pr.hide();
-            toast("Sorry, Already Exist");
-          }
-        });
+              toast("Sorry, Already Exist");
+            }
+          });
+        } else {
+          toast("Network Connection Lost");
+        }
       }
     } else {
       getImage();
@@ -82,7 +85,7 @@ class _RegisterState extends State<Register> {
   }
 
   Future getImage() async {
-    var img = await ImagePicker.pickImage(source: ImageSource.camera);
+    var img = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
       this._image = img;
     });

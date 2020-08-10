@@ -1,9 +1,11 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connection_verify/connection_verify.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/pages/cash.dart';
@@ -17,18 +19,17 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String name, mobile, imageUrl;
-  double amount = 0.0, cashIn = 0.0, cashOut = 0.0;
+  double _amount = 0.0, _cashIn = 0.0, _cashOut = 0.0;
   int tabIndex = 0;
-  Map<dynamic, dynamic> statement, cashin, cashout;
   List list;
   SharedPreferences sp;
   final db = Firestore.instance;
 
   @override
   void initState() {
-    getUser();
-    getData();
     super.initState();
+    getUser();
+    dashboard();
   }
 
   @override
@@ -41,74 +42,51 @@ class _HomeState extends State<Home> {
     setState(() {
       this.name = sp.getString('name');
       this.mobile = sp.getString('mobile');
-      this.imageUrl = sp.getString('image');
+      this.imageUrl = sp.getString('imgurl');
     });
   }
 
-  Future<void> getData() async {
-    int i=0;
-    var result = db
-        .collection('post')
-        .snapshots();
-    result.forEach((v){
-      print(v.documents[i]['name']);
-      i+=1;
-    });
-    // postData.once().then((DataSnapshot data) {
-    //   setState(() {
-    //     this.statement = data.value;
-    //   });
-    // });
-    // var cashinQuery = postData.orderByChild('cashtype').equalTo("IN");
-    // cashinQuery.once().then((DataSnapshot data) {
-    //   setState(() {
-    //     this.cashin = data.value;
-    //   });
-    //   cashin != null
-    //       ? cashin.forEach((key, value) {
-    //           setState(() {
-    //             this.cashIn += double.parse(cashin[key]['amount']);
-    //           });
-    //         })
-    //       : this.cashIn = 0.0;
-    // });
-    // var cashOutQuery = postData.orderByChild('cashtype').equalTo("OUT");
-    // cashOutQuery.once().then((DataSnapshot data) {
-    //   setState(() {
-    //     this.cashout = data.value;
-    //   });
-    //   cashout != null
-    //       ? cashout.forEach((key, value) {
-    //           setState(() {
-    //             this.cashOut += double.parse(cashout[key]['amount']);
-    //           });
-    //         })
-    //       : this.cashOut = 0.0;
-    //   setState(() {
-    //     double a = cashOut != 0.0 || cashIn != 0.0 ? cashIn - cashOut : cashIn;
-    //     this.amount = a;
-    //   });
-    // });
+  void dashboard() async {
+    if (await ConnectionVerify.connectionStatus()) {
+      db
+          .collection('post')
+          .where('cashtype', isEqualTo: 'IN')
+          .snapshots()
+          .listen((snapshot) {
+        snapshot.documents.forEach((doc) {
+          setState(() {
+            this._cashIn += double.parse(doc.data['amount']);
+          });
+        });
+        db
+            .collection('post')
+            .where('cashtype', isEqualTo: 'OUT')
+            .snapshots()
+            .listen((snapshot) {
+          snapshot.documents.forEach((doc) {
+            setState(() {
+              this._cashOut += double.parse(doc.data['amount']);
+            });
+          });
+          setState(() {
+            this._amount = _cashIn - _cashOut;
+          });
+        });
+      });
+    } else {
+      toast("Network Connection Lost");
+    }
   }
 
-  void getUpdate() {
-    // postData.once().then((DataSnapshot data) {
-    //   setState(() {
-    //     this.statement = data.value;
-    //   });
-    // });
-    // var cashinQuery = postData.orderByChild('cashtype').equalTo("IN");
-    // cashinQuery.once().then((DataSnapshot data) {
-    //   setState(() {
-    //     this.cashin = data.value;
-    //   });
-    // });
-    // var cashOutQuery = postData.orderByChild('cashtype').equalTo("OUT");
-    // cashOutQuery.once().then((DataSnapshot data) {
-    //   setState(() {
-    //     this.cashout = data.value;
-    //   });
-    // });
+  void toast(String text) {
+    Fluttertoast.showToast(
+        msg: "$text",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.pink,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   @override
@@ -117,9 +95,10 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.grey[50],
         body: Column(
           children: <Widget>[
-            // walletTop(name, mobile, imageUrl, amount, cashIn, cashOut, context),
-            // walletTab(tabIndex),
-            // walletPost(tabIndex, list),
+            walletTop(
+                name, mobile, imageUrl, _amount, _cashIn, _cashOut, context),
+            walletTab(tabIndex),
+            walletPost(tabIndex, list),
           ],
         ),
         floatingActionButton: FabCircularMenu(
@@ -139,15 +118,24 @@ class _HomeState extends State<Home> {
                   }),
               IconButton(
                   icon: Icon(
+                    Icons.settings_backup_restore,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    sp.clear();
+                    Navigator.pop(context);
+                  }),
+              IconButton(
+                  icon: Icon(
                     Icons.account_balance_wallet,
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => CashIn(
-                                value: amount,
+                                value: _amount,
                               )),
                     );
                   }),
@@ -164,7 +152,6 @@ class _HomeState extends State<Home> {
                 setState(() {
                   this.tabIndex = index;
                 });
-                getUpdate();
               },
               tabs: <Widget>[
                 Tab(
@@ -200,31 +187,101 @@ class _HomeState extends State<Home> {
                   height: MediaQuery.of(context).size.height / 1.8,
                   child: (tabIndex != 0)
                       ? tabIndex != 2
-                          ? ListView.builder(
-                              itemCount: cashin != null ? cashin.length : 0,
-                              itemBuilder: (BuildContext ctxt, int index) {
-                                key = cashin.keys.elementAt(index);
-                                return post(cashin, key);
-                              })
-                          : ListView.builder(
-                              itemCount: cashout != null ? cashout.length : 0,
-                              itemBuilder: (BuildContext ctxt, int index) {
-                                key = cashout.keys.elementAt(index);
-                                return post(cashout, key);
-                              })
-                      : ListView.builder(
-                          itemCount: statement != null ? statement.length : 0,
-                          itemBuilder: (BuildContext ctxt, int index) {
-                            key = statement.keys.elementAt(index);
-                            return post(statement, key);
+                          ? StreamBuilder(
+                              stream: Firestore.instance
+                                  .collection('post')
+                                  .where('cashtype', isEqualTo: 'IN')
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.data == null)
+                                  return Center(
+                                    child: Text("Loading..."),
+                                  );
+                                return ListView.builder(
+                                    itemCount:
+                                        snapshot.data.documents.length != null
+                                            ? snapshot.data.documents.length
+                                            : 0,
+                                    itemBuilder:
+                                        (BuildContext ctxt, int index) {
+                                      DocumentSnapshot data =
+                                          snapshot.data.documents[index];
+                                      return post(data);
+                                    });
+                              },
+                            )
+                          : StreamBuilder(
+                              stream: Firestore.instance
+                                  .collection('post')
+                                  .where('cashtype', isEqualTo: 'OUT')
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.data == null)
+                                  return Center(
+                                    child: Text("Loading..."),
+                                  );
+                                return ListView.builder(
+                                    itemCount:
+                                        snapshot.data.documents.length != null
+                                            ? snapshot.data.documents.length
+                                            : 0,
+                                    itemBuilder:
+                                        (BuildContext ctxt, int index) {
+                                      DocumentSnapshot data =
+                                          snapshot.data.documents[index];
+                                      return post(data);
+                                    });
+                              },
+                            )
+                      : StreamBuilder<QuerySnapshot>(
+                          stream:
+                              Firestore.instance.collection('post').snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.data == null)
+                              return Center(
+                                child: Text("Loading..."),
+                              );
+                            return ListView.builder(
+                                itemCount: snapshot.data.documents.length,
+                                itemBuilder: (BuildContext ctxt, int index) {
+                                  DocumentSnapshot data =
+                                      snapshot.data.documents[index];
+                                  return post(data);
+                                });
                           }))),
         ],
       );
 }
 
-Widget post(values, key) => Card(
+Widget post(values) => Card(
       elevation: 1,
       child: InkWell(
+          onLongPress: () async {
+            if (await ConnectionVerify.connectionStatus()) {
+              Firestore.instance
+                  .collection("post")
+                  .document(values.documentID)
+                  .delete();
+              Fluttertoast.showToast(
+                  msg: "Remove Successfuly",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.pink,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+                  _HomeState().initState();
+            } else {
+              Fluttertoast.showToast(
+                  msg: "Network Conncetion Lost",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.pink,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+            }
+          },
           child: Container(
               padding: EdgeInsets.only(bottom: 5),
               color: Colors.white70,
@@ -237,7 +294,7 @@ Widget post(values, key) => Card(
                   SizedBox(
                     width: 10,
                   ),
-                  values[key]['cashtype'] != 'OUT'
+                  values['cashtype'] != 'OUT'
                       ? CircleAvatar(
                           backgroundColor: Colors.grey[100],
                           child: Image.asset(
@@ -264,11 +321,11 @@ Widget post(values, key) => Card(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        values[key]['purpose'].toString(),
+                        values['purpose'].toString(),
                         style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
                       Text(
-                        Jiffy(values[key]['date']).yMMMMd,
+                        Jiffy(values['date']).yMMMMd,
                         style: TextStyle(fontSize: 12, color: Colors.black),
                       ),
                     ],
@@ -281,14 +338,14 @@ Widget post(values, key) => Card(
                       SizedBox(
                         height: 15,
                       ),
-                      values[key]['cashtype'] != 'IN'
+                      values['cashtype'] != 'IN'
                           ? Text(
-                              values[key]['amount'] + '\৳',
+                              values['amount'] + '\৳',
                               style:
                                   TextStyle(fontSize: 18, color: Colors.pink),
                             )
                           : Text(
-                              values[key]['amount'] + '\৳',
+                              values['amount'] + '\৳',
                               style:
                                   TextStyle(fontSize: 18, color: Colors.green),
                             ),
@@ -320,7 +377,7 @@ Widget walletTop(name, mobile, imageUrl, amount, cashIn, cashOut, context) =>
           SizedBox(
             height: 5,
           ),
-          Balance(amount),
+          balance(amount),
           SizedBox(
             height: 30,
           ),
@@ -375,9 +432,9 @@ class inOut extends StatelessWidget {
   }
 }
 
-class Balance extends StatelessWidget {
+class balance extends StatelessWidget {
   double amount;
-  Balance(this.amount);
+  balance(this.amount);
   @override
   Widget build(BuildContext context) {
     return Center(

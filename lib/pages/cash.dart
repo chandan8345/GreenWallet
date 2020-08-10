@@ -1,12 +1,13 @@
 import 'package:awesome_button/awesome_button.dart';
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connection_verify/connection_verify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fradio/fradio.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:wallet/pages/home.dart';
 
 class CashIn extends StatefulWidget {
   double value;
@@ -19,6 +20,7 @@ class _CashInState extends State<CashIn> {
   _CashInState(this.value);
   double value;
   final _formKey = GlobalKey<FormState>();
+  double _cashIn = 0.0, _cashOut = 0.0;
   TextEditingController amountCtrl = new TextEditingController();
   String mobile = "01762981976",
       amount,
@@ -34,6 +36,7 @@ class _CashInState extends State<CashIn> {
   @override
   void initState() {
     _resetSelectedDate();
+    dashboard();
     super.initState();
   }
 
@@ -51,29 +54,65 @@ class _CashInState extends State<CashIn> {
   }
 
   Future<void> submit() async {
-    pr.update(message: 'Please Wait');
-    pr.show();
     if (_formKey.currentState.validate()) {
-      await db.collection("post").add({
-        'mobile': mobile,
-        'cashtype': cashType,
-        'amount': amount,
-        'date': _selectedDate.toString(),
-        'purpose': cashType != 'OUT' ? this.inType : this.outType,
-      }).then((_){
-      pr.hide();
-      toast("Saved Successfuly");
-      });
+      if (await ConnectionVerify.connectionStatus()) {
+        pr.update(message: 'Please Wait');
+        pr.show();
+        await db.collection("post").add({
+          'mobile': mobile,
+          'cashtype': cashType,
+          'amount': amount,
+          'date': _selectedDate.toString(),
+          'purpose': cashType != 'OUT' ? this.inType : this.outType,
+        });
+        pr.hide();
+        toast("Saved Successfuly");
+        reset();
+      } else {
+        toast("Network Connection Lost");
+      }
     }
   }
 
-    void toast(String text) {
+  void dashboard() async {
+    if (await ConnectionVerify.connectionStatus()) {
+      db
+          .collection('post')
+          .where('cashtype', isEqualTo: 'IN')
+          .snapshots()
+          .listen((snapshot) {
+        snapshot.documents.forEach((doc) {
+          setState(() {
+            this._cashIn += double.parse(doc.data['amount']);
+          });
+        });
+        db
+            .collection('post')
+            .where('cashtype', isEqualTo: 'OUT')
+            .snapshots()
+            .listen((snapshot) {
+          snapshot.documents.forEach((doc) {
+            setState(() {
+              this._cashOut += double.parse(doc.data['amount']);
+            });
+          });
+          setState(() {
+            this.value = _cashIn - _cashOut;
+          });
+        });
+      });
+    } else {
+      toast("Network Connection Lost");
+    }
+  }
+
+  void toast(String text) {
     Fluttertoast.showToast(
         msg: "$text",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.pink,
         textColor: Colors.white,
         fontSize: 16.0);
   }
@@ -82,6 +121,7 @@ class _CashInState extends State<CashIn> {
     setState(() {
       amountCtrl.text = '';
       inType = 'Salary';
+      cashType = 'IN';
       outType = 'Food';
     });
   }
@@ -96,10 +136,7 @@ class _CashInState extends State<CashIn> {
         type: ProgressDialogType.Normal, isDismissible: true);
     return WillPopScope(
         onWillPop: () {
-          return Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => Home()),
-          );
+          Navigator.pop(context);
         },
         child: Scaffold(
           appBar: AppBar(
@@ -115,8 +152,7 @@ class _CashInState extends State<CashIn> {
             ],
             leading: IconButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => Home()));
+               Navigator.pop(context);
               },
               icon: Icon(Icons.arrow_back),
             ),

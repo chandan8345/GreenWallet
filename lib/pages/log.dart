@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connection_verify/connection_verify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
@@ -26,29 +27,33 @@ class _LogState extends State<Log> {
 
   _submit() async {
     if (_formKey.currentState.validate()) {
-      pr.update(message: 'Please Wait');
-      pr.show();
-      db
-          .collection('users')
-          .where('mobile', isEqualTo: mobile)
-          .where('password', isEqualTo: password)
-          .snapshots()
-          .listen((data) {
-        if (data.documents.length > 0) {
-          pr.hide();
-          setSharedPreference(
-              data.documents[0]['name'],
-              data.documents[0]['mobile'],
-              data.documents[0]['email'],
-              data.documents[0]['password'],
-              data.documents[0]['image']);
-          Route route = MaterialPageRoute(builder: (context) => Home());
-          Navigator.pushReplacement(context, route);
-        } else {
-          pr.hide();
-          toast("Something went wrong");
-        }
-      });
+      if (await ConnectionVerify.connectionStatus()) {
+        pr.update(message: 'Please Wait');
+        pr.show();
+        db
+            .collection('users')
+            .where('mobile', isEqualTo: mobile)
+            .where('password', isEqualTo: password)
+            .snapshots()
+            .listen((data) {
+          if (data.documents.length > 0) {
+            pr.hide();
+            setSharedPreference(
+                data.documents[0]['name'],
+                data.documents[0]['mobile'],
+                data.documents[0]['email'],
+                data.documents[0]['password'],
+                data.documents[0]['image']);
+            Route route = MaterialPageRoute(builder: (context) => Home());
+            Navigator.pushReplacement(context, route);
+          } else {
+            pr.hide();
+            toast("Something went wrong");
+          }
+        });
+      } else {
+        toast("Network Connection Lost");
+      }
     }
   }
 
