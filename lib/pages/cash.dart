@@ -237,6 +237,14 @@ class _CashInState extends State<CashIn> {
               18,
               Colors.pink,
               'Savings'),
+                      CashOut(
+              Icon(
+                Icons.monetization_on,
+                size: 70,
+              ),
+              18,
+              Colors.pink,
+              'Loan'),
           CashOut(
               Icon(
                 Icons.invert_colors,
@@ -374,6 +382,14 @@ class _CashInState extends State<CashIn> {
               7,
               Colors.green,
               'Loundry'),
+                        CashIn(
+              Icon(
+                Icons.credit_card,
+                size: 70,
+              ),
+              7,
+              Colors.green,
+              'Installment'),
           CashIn(
               Icon(
                 Icons.local_bar,

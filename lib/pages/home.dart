@@ -53,6 +53,7 @@ class _HomeState extends State<Home> {
           .where('cashtype', isEqualTo: 'IN')
           .snapshots()
           .listen((snapshot) {
+        this._cashIn = 0.0;
         snapshot.documents.forEach((doc) {
           setState(() {
             this._cashIn += double.parse(doc.data['amount']);
@@ -63,6 +64,7 @@ class _HomeState extends State<Home> {
             .where('cashtype', isEqualTo: 'OUT')
             .snapshots()
             .listen((snapshot) {
+          this._cashOut = 0.0;
           snapshot.documents.forEach((doc) {
             setState(() {
               this._cashOut += double.parse(doc.data['amount']);
@@ -270,7 +272,6 @@ Widget post(values) => Card(
                   backgroundColor: Colors.pink,
                   textColor: Colors.white,
                   fontSize: 16.0);
-                  _HomeState().initState();
             } else {
               Fluttertoast.showToast(
                   msg: "Network Conncetion Lost",
@@ -489,16 +490,20 @@ Widget Avater(imageUrl) => AvatarGlow(
       child: Material(
         elevation: 8.0,
         shape: CircleBorder(),
-        child: CircleAvatar(
-          backgroundColor: Colors.grey[100],
+        child: ClipOval(
           child: imageUrl != null
-              ? Image.network(imageUrl)
+              ? Image.network(
+                  imageUrl,
+                  height: 60,
+                  width: 60,
+                  fit: BoxFit.cover,
+                )
               : Image.network(
                   'https://cdn4.iconfinder.com/data/icons/avatars-21/512/avatar-circle-human-female-black-7-512.png',
-                  height: 55,
+                  height: 60,
+                  width: 60,
                   fit: BoxFit.fill,
                 ),
-          radius: 25.0,
         ),
       ),
     );
