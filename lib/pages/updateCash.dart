@@ -10,39 +10,36 @@ import 'package:fradio/fradio.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CashIn extends StatefulWidget {
-  double value;
-  CashIn({this.value, Key key}) : super(key: key);
+class UpdateCash extends StatefulWidget {
+  String id;
+  UpdateCash({this.id, Key key}) : super(key: key);
   @override
-  _CashInState createState() => _CashInState(value);
+  _UpdateCashState createState() => _UpdateCashState(id);
 }
 
-class _CashInState extends State<CashIn> {
-  _CashInState(this.value);
-  double value;
+class _UpdateCashState extends State<UpdateCash> {
+  _UpdateCashState(this.documentId);
+  String documentId;
+  SharedPreferences sp;
   final _formKey = GlobalKey<FormState>();
-  double _cashIn = 0.0, _cashOut = 0.0;
+  double _cashIn = 0.0, _cashOut = 0.0, value = 0.0;
   TextEditingController amountCtrl = new TextEditingController();
-  String mobile,
-      amount,
-      cashType = 'IN',
-      inType = 'Salary',
-      outType = 'Food';
+  String mobile, amount, cashType, inType, outType;
   DateTime dateTime;
   ProgressDialog pr;
   DateTime _selectedDate;
-  final db = Firestore.instance;SharedPreferences sp;
+  final db = Firestore.instance;
   int _selectedValueIn = 0, _selectedValueOut = 0;
 
   @override
   void initState() {
-    getUser();
     _resetSelectedDate();
+    data(documentId);
     dashboard();
     super.initState();
   }
 
-    Future<void> getUser() async {
+  Future<void> getUser() async {
     sp = await SharedPreferences.getInstance();
     setState(() {
       this.mobile = sp.getString('mobile');
@@ -53,7 +50,6 @@ class _CashInState extends State<CashIn> {
     setState(() {
       this.outType = value;
     });
-    print(outType);
   }
 
   void stateIn(value) {
@@ -62,21 +58,39 @@ class _CashInState extends State<CashIn> {
     });
   }
 
+  Future data(val) async {
+    if (await ConnectionVerify.connectionStatus()) {
+      var doc = db.collection("post").document(val).snapshots();
+      doc.listen((data) {
+        setState(() {
+          this.cashType = data['cashtype'];
+          cashType != 'OUT'
+              ? this.inType = data['purpose']
+              : this.outType = data['purpose'];
+          amountCtrl.text = data['amount'];
+          this.amount = data['amount'];
+          this._selectedDate = DateTime.parse(data['date']);
+        });
+      });
+    } else {
+      data(val);
+    }
+  }
+
   Future<void> submit() async {
     if (_formKey.currentState.validate()) {
       if (await ConnectionVerify.connectionStatus()) {
         pr.update(message: 'Please Wait');
         pr.show();
-        await db.collection("post").add({
+        await db.collection("post").document(documentId).updateData({
           'mobile': mobile,
           'cashtype': cashType,
           'amount': amount,
           'date': _selectedDate.toString(),
           'purpose': cashType != 'OUT' ? this.inType : this.outType,
-          'postingdate':DateTime.now().toString()
         });
         pr.hide();
-        toast("Saved Successfuly");
+        toast("Update Successfully");
         reset();
       } else {
         toast("Network Connection Lost");
@@ -398,7 +412,7 @@ class _CashInState extends State<CashIn> {
                 Icons.local_drink,
                 size: 70,
               ),
-            8,
+              8,
               Colors.green,
               'Loundry'),
           CashIn(
@@ -489,7 +503,7 @@ class _CashInState extends State<CashIn> {
         validator: (val) {
           if (val.isEmpty) {
             return 'Amount cant be Zero';
-          } else if (double.parse(val) > value && cashType == 'OUT') {
+          } else if (double.parse(val) > value+double.parse(amount) && cashType == 'OUT') {
             return '$val not to greater than $value';
           } else {
             return null;

@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/pages/cash.dart';
+import 'package:wallet/pages/updateCash.dart';
 
 int index;
 
@@ -193,6 +194,7 @@ class _HomeState extends State<Home> {
                               stream: Firestore.instance
                                   .collection('post')
                                   .where('cashtype', isEqualTo: 'IN')
+                                  .orderBy("postingdate", descending: true)
                                   .snapshots(),
                               builder: (context, snapshot) {
                                 if (snapshot.data == null)
@@ -208,7 +210,7 @@ class _HomeState extends State<Home> {
                                         (BuildContext ctxt, int index) {
                                       DocumentSnapshot data =
                                           snapshot.data.documents[index];
-                                      return post(data);
+                                      return post(data, context);
                                     });
                               },
                             )
@@ -216,6 +218,7 @@ class _HomeState extends State<Home> {
                               stream: Firestore.instance
                                   .collection('post')
                                   .where('cashtype', isEqualTo: 'OUT')
+                                  .orderBy("postingdate", descending: true)
                                   .snapshots(),
                               builder: (context, snapshot) {
                                 if (snapshot.data == null)
@@ -231,13 +234,13 @@ class _HomeState extends State<Home> {
                                         (BuildContext ctxt, int index) {
                                       DocumentSnapshot data =
                                           snapshot.data.documents[index];
-                                      return post(data);
+                                      return post(data, context);
                                     });
                               },
                             )
                       : StreamBuilder<QuerySnapshot>(
                           stream:
-                              Firestore.instance.collection('post').snapshots(),
+                              Firestore.instance.collection('post').orderBy("postingdate", descending: true).snapshots(),
                           builder: (context, snapshot) {
                             if (snapshot.data == null)
                               return Center(
@@ -248,16 +251,24 @@ class _HomeState extends State<Home> {
                                 itemBuilder: (BuildContext ctxt, int index) {
                                   DocumentSnapshot data =
                                       snapshot.data.documents[index];
-                                  return post(data);
+                                  return post(data, context);
                                 });
                           }))),
         ],
       );
 }
 
-Widget post(values) => Card(
+Widget post(values, context) => Card(
       elevation: 1,
       child: InkWell(
+          onDoubleTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      UpdateCash(id: values.documentID)),
+            );
+          },
           onLongPress: () async {
             if (await ConnectionVerify.connectionStatus()) {
               Firestore.instance
