@@ -29,6 +29,7 @@ class _RegisterState extends State<Register> {
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
   RegExp regex = new RegExp(pattern);
   File _image;
+  List country;
   ProgressDialog pr;
   final StorageReference storageReference = FirebaseStorage.instance.ref();
   final db = Firestore.instance;
@@ -222,35 +223,35 @@ class _RegisterState extends State<Register> {
                       Padding(
                         padding: EdgeInsets.only(
                             left: 20, right: 20, bottom: 0, top: 0),
-                        child: TextFormField(
-                          controller: mobileCtrl,
-                          decoration: new InputDecoration(
-                            labelText: 'Mobile',
-                            fillColor: Colors.white,
-                            prefixText: '+88 ',
-                            icon: Icon(Icons.phone),
-                            border: UnderlineInputBorder(),
-                            //fillColor: Colors.green
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter mobile no';
-                            } else if (value.length != 11) {
-                              return 'Mobile no must be 11 Digits';
-                            } else {
-                              return null;
-                            }
-                          },
-                          keyboardType: TextInputType.phone,
-                          style: new TextStyle(
-                            fontFamily: "Poppins",
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              this.mobile = value;
-                            });
-                          },
-                        ),
+                        child:
+                            TextFormField(
+                              controller: mobileCtrl,
+                              decoration: new InputDecoration(
+                                labelText: 'Mobile',
+                                fillColor: Colors.white,
+                                icon: Icon(Icons.phone),
+                                border: UnderlineInputBorder(),
+                                //fillColor: Colors.green
+                              ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please enter mobile no';
+                                } else if (value.length != 11) {
+                                  return 'Mobile no must be 11 Digits';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              keyboardType: TextInputType.phone,
+                              style: new TextStyle(
+                                fontFamily: "Poppins",
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  this.mobile = value;
+                                });
+                              },
+                            ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(

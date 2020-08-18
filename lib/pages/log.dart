@@ -115,7 +115,6 @@ class _LogState extends State<Log> {
                               decoration: new InputDecoration(
                                 labelText: 'Mobile',
                                 fillColor: Colors.white,
-                                prefixText: '+88 ',
                                 icon: Icon(Icons.phone),
                                 border: UnderlineInputBorder(),
                                 //fillColor: Colors.green
