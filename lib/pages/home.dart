@@ -52,6 +52,7 @@ class _HomeState extends State<Home> {
       db
           .collection('post')
           .where('cashtype', isEqualTo: 'IN')
+          .where('mobile', isEqualTo: mobile)
           .snapshots()
           .listen((snapshot) {
         this._cashIn = 0.0;
@@ -63,6 +64,7 @@ class _HomeState extends State<Home> {
         db
             .collection('post')
             .where('cashtype', isEqualTo: 'OUT')
+            .where('mobile', isEqualTo: mobile)
             .snapshots()
             .listen((snapshot) {
           this._cashOut = 0.0;
@@ -165,13 +167,13 @@ class _HomeState extends State<Home> {
                 ),
                 Tab(
                   child: Text(
-                    'CASH IN',
+                    'MONEY IN',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
                 Tab(
                   child: Text(
-                    'CASH OUT',
+                    'MONEY OUT',
                     style: TextStyle(color: Colors.black),
                   ),
                 )
@@ -193,7 +195,8 @@ class _HomeState extends State<Home> {
                           ? StreamBuilder(
                               stream: Firestore.instance
                                   .collection('post')
-                                  .where('cashtype', isEqualTo: 'IN')
+                                  .where("cashtype", isEqualTo: 'IN')
+                                  .where("mobile", isEqualTo: mobile)
                                   .orderBy("postingdate", descending: true)
                                   .snapshots(),
                               builder: (context, snapshot) {
@@ -218,6 +221,7 @@ class _HomeState extends State<Home> {
                               stream: Firestore.instance
                                   .collection('post')
                                   .where('cashtype', isEqualTo: 'OUT')
+                                  .where("mobile", isEqualTo: mobile)
                                   .orderBy("postingdate", descending: true)
                                   .snapshots(),
                               builder: (context, snapshot) {
@@ -239,8 +243,11 @@ class _HomeState extends State<Home> {
                               },
                             )
                       : StreamBuilder<QuerySnapshot>(
-                          stream:
-                              Firestore.instance.collection('post').orderBy("postingdate", descending: true).snapshots(),
+                          stream: Firestore.instance
+                              .collection('post')
+                              .where("mobile", isEqualTo: mobile)
+                              .orderBy("postingdate", descending: true)
+                              .snapshots(),
                           builder: (context, snapshot) {
                             if (snapshot.data == null)
                               return Center(
@@ -265,8 +272,7 @@ Widget post(values, context) => Card(
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      UpdateCash(id: values.documentID)),
+                  builder: (context) => UpdateCash(id: values.documentID)),
             );
           },
           onLongPress: () async {

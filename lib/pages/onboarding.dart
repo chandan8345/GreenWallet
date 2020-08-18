@@ -42,7 +42,7 @@ class _OnboardingState extends State<Onboarding> {
           child: Column(
             children: <Widget>[
               Expanded(
-                flex: 8,
+                flex: 7,
                   child: Image.asset('images/save.jpg'),
               ),
               Expanded(
