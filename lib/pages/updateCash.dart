@@ -103,6 +103,7 @@ class _UpdateCashState extends State<UpdateCash> {
       db
           .collection('post')
           .where('cashtype', isEqualTo: 'IN')
+          .where('mobile', isEqualTo: mobile)
           .snapshots()
           .listen((snapshot) {
         snapshot.documents.forEach((doc) {
@@ -113,6 +114,7 @@ class _UpdateCashState extends State<UpdateCash> {
         db
             .collection('post')
             .where('cashtype', isEqualTo: 'OUT')
+            .where('mobile', isEqualTo: mobile)
             .snapshots()
             .listen((snapshot) {
           snapshot.documents.forEach((doc) {
