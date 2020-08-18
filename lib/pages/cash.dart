@@ -490,10 +490,13 @@ class _CashInState extends State<CashIn> {
         ),
         validator: (val) {
           if (val.isEmpty) {
-            return 'Amount cant be Zero';
+            return cashType!="OUT"?'Money in amount cant be empty':'Money out amount cant be empty';
           } else if (double.parse(val) > value && cashType == 'OUT') {
-            return '$val not to greater than $value';
-          } else {
+            return cashType!="OUT"?'Money in':'Money out' +' amount $val greater than Balance $value';
+          }else if(double.parse(val) == 0.0){
+            return cashType!="OUT"?'Money in amount cant be empty':'Money out amout cant be Zero';
+          }
+           else {
             return null;
           }
         },

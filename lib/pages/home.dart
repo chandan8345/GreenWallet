@@ -423,7 +423,7 @@ class inOut extends StatelessWidget {
               ),
             ),
             Text(
-              'CASH IN',
+              'MONEY IN',
               style: TextStyle(fontSize: 10, color: Colors.white60),
             ),
           ],
@@ -440,7 +440,7 @@ class inOut extends StatelessWidget {
               ),
             ),
             Text(
-              'CASH OUT',
+              'MONEY OUT',
               style: TextStyle(fontSize: 10, color: Colors.white60),
             ),
           ],

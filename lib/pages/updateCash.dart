@@ -22,7 +22,7 @@ class _UpdateCashState extends State<UpdateCash> {
   String documentId;
   SharedPreferences sp;
   final _formKey = GlobalKey<FormState>();
-  double _cashIn = 0.0, _cashOut = 0.0, value = 0.0;
+  double _cashIn = 0.0, _cashOut = 0.0, balance = 0.0;
   TextEditingController amountCtrl = new TextEditingController();
   String mobile, amount, cashType, inType, outType;
   DateTime dateTime;
@@ -83,9 +83,7 @@ class _UpdateCashState extends State<UpdateCash> {
         pr.update(message: 'Please Wait');
         pr.show();
         await db.collection("post").document(documentId).updateData({
-          'mobile': mobile,
-          'cashtype': cashType,
-          'amount': amount,
+          'amount': amountCtrl.text,
           'date': _selectedDate.toString(),
           'purpose': cashType != 'OUT' ? this.inType : this.outType,
         });
@@ -123,7 +121,7 @@ class _UpdateCashState extends State<UpdateCash> {
             });
           });
           setState(() {
-            this.value = _cashIn - _cashOut;
+            this.balance = _cashIn - _cashOut;
           });
         });
       });
@@ -170,12 +168,12 @@ class _UpdateCashState extends State<UpdateCash> {
             backgroundColor: Colors.green,
             title: Text('CASH IN-OUT'),
             actions: <Widget>[
-              IconButton(
-                onPressed: () {
-                  reset();
-                },
-                icon: Icon(Icons.replay),
-              )
+              // IconButton(
+              //   onPressed: () {
+              //     reset();
+              //   }
+              //   icon: Icon(Icons.replay),
+              // )
             ],
             leading: IconButton(
               onPressed: () {
@@ -504,9 +502,12 @@ class _UpdateCashState extends State<UpdateCash> {
         ),
         validator: (val) {
           if (val.isEmpty) {
-            return 'Amount cant be Zero';
-          } else if (double.parse(val) > value+double.parse(amount) && cashType == 'OUT') {
-            return '$val not to greater than $value';
+            return cashType!="OUT"?'Money in amount cant be empty':'Money out amount cant be empty';
+          } else if (double.parse(val) > balance + double.parse(amount) &&
+              cashType == 'OUT') {
+            return cashType!="OUT"?'Money in ':'Money out ' +'$val greater than or equal to your Balance';
+          } else if (double.parse(val) == 0.0) {
+            return cashType!="OUT"?'Money in amount cant be empty':'Money out amount cant be Zero';
           } else {
             return null;
           }
@@ -515,14 +516,14 @@ class _UpdateCashState extends State<UpdateCash> {
         style: new TextStyle(
           fontFamily: "Poppins",
         ),
-        onSaved: (String val) {
-          this.amount = val;
-        },
-        onChanged: (String val) {
-          setState(() {
-            this.amount = val;
-          });
-        },
+        // onSaved: (String val) {
+        //   this.amount = val;
+        // },
+        // onChanged: (String val) {
+        //   setState(() {
+        //     this.amount = val;
+        //   });
+        // },
       );
 
   Widget cashtype() => Row(
