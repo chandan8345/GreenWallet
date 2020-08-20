@@ -122,9 +122,11 @@ class _LogState extends State<Log> {
                               validator: (value) {
                                 if (value.isEmpty) {
                                   return 'Please enter mobile no';
-                                } else if (value.length != 11) {
-                                  return 'Mobile no must be 11 Digits';
-                                } else {
+                                } 
+                                // else if (value.length != 11) {
+                                //   return 'Mobile no must be 11 Digits';
+                                // }
+                                 else {
                                   return null;
                                 }
                               },
