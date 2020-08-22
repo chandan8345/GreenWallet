@@ -10,6 +10,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:wallet/pages/log.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Register extends StatefulWidget {
   Register({Key key}) : super(key: key);
@@ -48,7 +49,7 @@ class _RegisterState extends State<Register> {
     if (_image != null) {
       if (_formKey.currentState.validate()) {
         if (await ConnectionVerify.connectionStatus()) {
-          pr.update(message: 'Please Wait');
+          pr.update(message: 'progress_wait'.tr());
           pr.show();
           StorageReference ref =
               storageReference.child("images/").child("$mobile");
@@ -69,15 +70,15 @@ class _RegisterState extends State<Register> {
                 'image': imageUrl
               }).then((_) {
                 pr.hide();
-                toast("Registration Success");
+                toast("reg_sucess".tr());
               });
             } else {
               pr.hide();
-              toast("Sorry, Already Exist");
+              toast("exist".tr());
             }
           });
         } else {
-          toast("Network Connection Lost");
+          toast("connection_notify2".tr());
         }
       }
     } else {
@@ -183,7 +184,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   Text(
-                    'SIGN UP',
+                    'signup'.tr(),
                     textAlign: TextAlign.start,
                     style: TextStyle(color: Colors.orange, fontSize: 25),
                   ),
@@ -196,7 +197,7 @@ class _RegisterState extends State<Register> {
                         child: TextFormField(
                           controller: nameCtrl,
                           decoration: new InputDecoration(
-                            labelText: 'Name',
+                            labelText: 'name'.tr(),
                             fillColor: Colors.white,
                             icon: Icon(Icons.person),
                             border: UnderlineInputBorder(),
@@ -204,7 +205,7 @@ class _RegisterState extends State<Register> {
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Please enter your name';
+                              return 'signup_notify1'.tr();
                             } else {
                               return null;
                             }
@@ -227,7 +228,7 @@ class _RegisterState extends State<Register> {
                             TextFormField(
                               controller: mobileCtrl,
                               decoration: new InputDecoration(
-                                labelText: 'Mobile',
+                                labelText: 'mobile'.tr(),
                                 fillColor: Colors.white,
                                 icon: Icon(Icons.phone),
                                 border: UnderlineInputBorder(),
@@ -235,7 +236,7 @@ class _RegisterState extends State<Register> {
                               ),
                               validator: (value) {
                                 if (value.isEmpty) {
-                                  return 'Please enter mobile no';
+                                  return 'signin_notify1'.tr();
                                 } 
                                 // else if (value.length != 11) {
                                 //   return 'Mobile no must be 11 Digits';
@@ -261,7 +262,7 @@ class _RegisterState extends State<Register> {
                         child: TextFormField(
                           controller: emailCtrl,
                           decoration: new InputDecoration(
-                            labelText: 'Email',
+                            labelText: 'email'.tr(),
                             fillColor: Colors.white,
                             icon: Icon(Icons.email),
                             border: UnderlineInputBorder(),
@@ -269,9 +270,9 @@ class _RegisterState extends State<Register> {
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Please enter email address';
+                              return 'signup_notify2'.tr();
                             } else if (!regex.hasMatch(value)) {
-                              return 'Please enter valid email';
+                              return 'signup_notify3'.tr();
                             } else {
                               return null;
                             }
@@ -294,7 +295,7 @@ class _RegisterState extends State<Register> {
                           controller: passCtrl,
                           obscureText: true,
                           decoration: new InputDecoration(
-                            labelText: 'Password',
+                            labelText: 'pass'.tr(),
                             fillColor: Colors.white,
                             icon: Icon(Icons.lock),
                             border: UnderlineInputBorder(),
@@ -302,7 +303,7 @@ class _RegisterState extends State<Register> {
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Please enter secure code';
+                              return 'signin_notify2'.tr();
                             } else {
                               return null;
                             }
@@ -327,7 +328,7 @@ class _RegisterState extends State<Register> {
                                 MaterialPageRoute(builder: (context) => Log());
                             Navigator.push(context, route);
                           },
-                          child: Text("Already Register? Go to Sign in Page"),
+                          child: Text("demo2").tr(),
                         )),
                       ),
                     ]),
@@ -346,7 +347,7 @@ class _RegisterState extends State<Register> {
                         InkWell(
                           onTap: _submit,
                           child: roundedRectButton(
-                              "Register", signUpGradients, false),
+                              "register".tr(), signUpGradients, false),
                         ),
                       ],
                     ),

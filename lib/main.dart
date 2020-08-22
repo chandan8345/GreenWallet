@@ -7,7 +7,7 @@ void main() => runApp(
       EasyLocalization(
           supportedLocales: [Locale('en', 'US'), Locale('bn', 'BD')],
           path: 'lang', // <-- change patch to your
-          fallbackLocale: Locale('en', 'US'),
+          fallbackLocale: Locale('bn', 'BD'),
           child: MyApp()),
     );
 

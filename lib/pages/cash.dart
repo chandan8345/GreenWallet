@@ -2,6 +2,7 @@ import 'package:awesome_button/awesome_button.dart';
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connection_verify/connection_verify.dart';
+import 'package:custom_switch_button/custom_switch_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fradio/fradio.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CashIn extends StatefulWidget {
   double value;
@@ -23,16 +25,15 @@ class _CashInState extends State<CashIn> {
   final _formKey = GlobalKey<FormState>();
   double _cashIn = 0.0, _cashOut = 0.0;
   TextEditingController amountCtrl = new TextEditingController();
-  String mobile,
-      amount,
-      cashType = 'IN',
-      inType = 'Salary',
-      outType = 'Food';
+  String mobile, amount, cashType = 'IN', inType = 'Salary', outType = 'Food';
   DateTime dateTime;
+  Locale locale;
   ProgressDialog pr;
   DateTime _selectedDate;
-  final db = Firestore.instance;SharedPreferences sp;
+  final db = Firestore.instance;
+  SharedPreferences sp;
   int _selectedValueIn = 0, _selectedValueOut = 0;
+  bool isChecked = false;
 
   @override
   void initState() {
@@ -42,7 +43,7 @@ class _CashInState extends State<CashIn> {
     super.initState();
   }
 
-    Future<void> getUser() async {
+  Future<void> getUser() async {
     sp = await SharedPreferences.getInstance();
     setState(() {
       this.mobile = sp.getString('mobile');
@@ -65,7 +66,7 @@ class _CashInState extends State<CashIn> {
   Future<void> submit() async {
     if (_formKey.currentState.validate()) {
       if (await ConnectionVerify.connectionStatus()) {
-        pr.update(message: 'Please Wait');
+        pr.update(message: 'progress_wait'.tr());
         pr.show();
         await db.collection("post").add({
           'mobile': mobile,
@@ -73,13 +74,13 @@ class _CashInState extends State<CashIn> {
           'amount': amount,
           'date': _selectedDate.toString(),
           'purpose': cashType != 'OUT' ? this.inType : this.outType,
-          'postingdate':DateTime.now().toString()
+          'postingdate': DateTime.now().toString()
         });
         pr.hide();
-        toast("Saved Successfuly");
+        toast("data_saved".tr());
         reset();
       } else {
-        toast("Network Connection Lost");
+        toast("connection_notify2".tr());
       }
     }
   }
@@ -114,7 +115,7 @@ class _CashInState extends State<CashIn> {
         });
       });
     } else {
-      toast("Network Connection Lost");
+      toast("connection_notify2".tr());
     }
   }
 
@@ -154,14 +155,32 @@ class _CashInState extends State<CashIn> {
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.green,
-            title: Text('CASH IN-OUT'),
+            title: Text('cash_in_out'.tr()),
             actions: <Widget>[
               IconButton(
                 onPressed: () {
                   reset();
                 },
-                icon: Icon(Icons.replay),
-              )
+                icon: Text(
+                  'reset'.tr(),
+                  style: TextStyle(
+                      color: Colors.white70, fontWeight: FontWeight.bold,fontSize: 12),
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  if (context.locale.toString().contains('en_US')) {
+                    context.locale = Locale('bn', 'BD');
+                  } else {
+                    context.locale = Locale('en', 'US');
+                  }
+                },
+                icon: Text(
+                  'ln'.tr(),
+                  style: TextStyle(
+                      color: Colors.white70, fontWeight: FontWeight.bold,fontSize: 12),
+                ),
+              ),
             ],
             leading: IconButton(
               onPressed: () {
@@ -212,7 +231,7 @@ class _CashInState extends State<CashIn> {
         onTap: () => submit(),
         color: Colors.green,
         child: Text(
-          "Save",
+          "save".tr(),
           style: TextStyle(
             color: Colors.white,
             fontSize: 18.0,
@@ -231,97 +250,109 @@ class _CashInState extends State<CashIn> {
                 Icons.account_balance_wallet,
                 size: 70,
               ),
-              18,
+              19,
               Colors.pink,
-              "Salary"),
+              "Salary",
+              'salary'.tr()),
           CashOut(
               Icon(
                 Icons.card_travel,
                 size: 70,
               ),
-              19,
+              20,
               Colors.pink,
-              "Business"),
+              "Business",
+              'business'.tr()),
           CashOut(
               Icon(
                 Icons.save_alt,
                 size: 70,
               ),
-              20,
+              21,
               Colors.pink,
-              'Savings'),
+              'Savings',
+              'savings'.tr()),
           CashOut(
               Icon(
                 Icons.monetization_on,
                 size: 70,
               ),
-              21,
+              22,
               Colors.pink,
-              'Loan'),
+              'Loan',
+              'loan'.tr()),
           CashOut(
               Icon(
                 Icons.invert_colors,
                 size: 70,
               ),
-              22,
+              23,
               Colors.pink,
-              'Investment'),
+              'Investment',
+              'investment'.tr()),
           CashOut(
               Icon(
                 Icons.supervisor_account,
                 size: 70,
               ),
-              23,
+              24,
               Colors.pink,
-              'Insurance'),
+              'Insurance',
+              'insurance'.tr()),
           CashOut(
               Icon(
                 Icons.mail_outline,
                 size: 70,
               ),
-              24,
+              25,
               Colors.pink,
-              'Bonus'),
+              'Bonus',
+              'bonus'.tr()),
           CashOut(
               Icon(
                 Icons.airline_seat_recline_extra,
                 size: 70,
               ),
-              25,
+              26,
               Colors.pink,
-              'Pension'),
+              'Pension',
+              'pension'.tr()),
           CashOut(
               Icon(
                 Icons.local_activity,
                 size: 70,
               ),
-              26,
+              27,
               Colors.pink,
-              'Lottery'),
+              'Lottery',
+              'lottery'.tr()),
           CashOut(
               Icon(
                 Icons.streetview,
                 size: 70,
               ),
-              27,
+              28,
               Colors.pink,
-              'Stipend'),
+              'Stipend',
+              'stipend'.tr()),
           CashOut(
               Icon(
                 Icons.sentiment_very_satisfied,
                 size: 70,
               ),
-              28,
+              29,
               Colors.pink,
-              'Broker'),
+              'Broker',
+              'broker'.tr()),
           CashOut(
               Icon(
                 Icons.transfer_within_a_station,
                 size: 70,
               ),
-              29,
+              30,
               Colors.pink,
-              'Others'),
+              'Others',
+              'others'.tr()),
         ],
       ));
 
@@ -338,7 +369,8 @@ class _CashInState extends State<CashIn> {
               ),
               0,
               Colors.green,
-              'Food'),
+              'Food',
+              'food'.tr()),
           CashIn(
               Icon(
                 Icons.shopping_cart,
@@ -346,15 +378,17 @@ class _CashInState extends State<CashIn> {
               ),
               1,
               Colors.green,
-              'Shopping'),
+              'Shopping',
+              'shopping'.tr()),
           CashIn(
               Icon(
-                Icons.card_giftcard,
+                Icons.home,
                 size: 70,
               ),
               2,
               Colors.green,
-              'Talk Time'),
+              'House Rent',
+              'house_rent'.tr()),
           CashIn(
               Icon(
                 Icons.card_giftcard,
@@ -362,95 +396,116 @@ class _CashInState extends State<CashIn> {
               ),
               3,
               Colors.green,
-              'Gifts'),
+              'Talk Time',
+              'talktime'.tr()),
+          CashIn(
+              Icon(
+                Icons.card_giftcard,
+                size: 70,
+              ),
+              4,
+              Colors.green,
+              'Gifts',
+              'gifts'.tr()),
           CashIn(
               Icon(
                 Icons.lightbulb_outline,
                 size: 70,
               ),
-              4,
+              5,
               Colors.green,
-              'Electricity'),
+              'Electricity',
+              'electricity'.tr()),
           CashIn(
               Icon(
                 Icons.games,
                 size: 70,
               ),
-              5,
+              6,
               Colors.green,
-              'Gas'),
+              'Gas',
+              'gas'.tr()),
           CashIn(
               Icon(
                 Icons.opacity,
                 size: 70,
               ),
-              6,
+              7,
               Colors.green,
-              'Water'),
+              'Water',
+              'water'.tr()),
           CashIn(
               Icon(
                 Icons.signal_wifi_4_bar,
                 size: 70,
               ),
-              7,
+              8,
               Colors.green,
-              'Internet'),
+              'Internet',
+              'internet'.tr()),
           CashIn(
               Icon(
                 Icons.local_drink,
                 size: 70,
               ),
-            8,
+              9,
               Colors.green,
-              'Loundry'),
+              'Loundry',
+              'loundry'.tr()),
           CashIn(
               Icon(
                 Icons.credit_card,
                 size: 70,
               ),
-              9,
+              10,
               Colors.green,
-              'Installment'),
+              'Installment',
+              'installment'.tr()),
           CashIn(
               Icon(
                 Icons.local_bar,
                 size: 70,
               ),
-              10,
+              11,
               Colors.green,
-              'Entertainment'),
+              'Entertainment',
+              'entertainment'.tr()),
           CashIn(
               Icon(
                 Icons.local_gas_station,
                 size: 70,
               ),
-              11,
+              12,
               Colors.green,
-              'Fuel'),
+              'Fuel',
+              'fuel'.tr()),
           CashIn(
               Icon(
                 Icons.hotel,
                 size: 70,
               ),
-              12,
+              13,
               Colors.green,
-              'Medical'),
+              'Medical',
+              'medical'.tr()),
           CashIn(
               Icon(
                 Icons.local_library,
                 size: 70,
               ),
-              13,
+              14,
               Colors.green,
-              'Education'),
+              'Education',
+              'education'.tr()),
           CashIn(
               Icon(
                 Icons.directions_car,
                 size: 70,
               ),
-              14,
+              15,
               Colors.green,
-              'Transport'),
+              'Transport',
+              'transport'.tr()),
           CashIn(
               Icon(
                 Icons.flight,
@@ -458,30 +513,33 @@ class _CashInState extends State<CashIn> {
               ),
               15,
               Colors.green,
-              'Travel'),
+              'Travel',
+              'travel'.tr()),
           CashIn(
               Icon(
                 Icons.local_atm,
                 size: 70,
               ),
-              16,
+              17,
               Colors.green,
-              'Tax'),
+              'Tax',
+              'tax'.tr()),
           CashIn(
               Icon(
                 Icons.bubble_chart,
                 size: 70,
               ),
-              17,
+              18,
               Colors.green,
-              'Others'),
+              'Others',
+              'others'.tr()),
         ],
       ));
 
   Widget money() => TextFormField(
         controller: amountCtrl,
         decoration: new InputDecoration(
-          labelText: 'Amount',
+          labelText: 'amount'.tr(),
           fillColor: Colors.white,
           //icon: Icon(Icons.border_color),
           hintText: '',
@@ -490,13 +548,18 @@ class _CashInState extends State<CashIn> {
         ),
         validator: (val) {
           if (val.isEmpty) {
-            return cashType!="OUT"?'Money in amount cant be empty':'Money out amount cant be empty';
+            return cashType != "OUT"
+                ? 'moneyin_notify1'.tr()
+                : 'moneyout_notify2'.tr();
           } else if (double.parse(val) > value && cashType == 'OUT') {
-            return cashType!="OUT"?'Money in':'Money out' +' amount $val greater than Balance $value';
-          }else if(double.parse(val) == 0.0){
-            return cashType!="OUT"?'Money in amount cant be empty':'Money out amout cant be Zero';
-          }
-           else {
+            return cashType != "OUT"
+                ? 'cash_in'.tr()
+                : 'cash_out'.tr() + 'amount'.tr() + val.toString() +"greter".tr() + value.toString();
+          } else if (double.parse(val) == 0.0) {
+            return cashType != "OUT"
+                ? 'moneyin_notify1'.tr()
+                : 'moneyout_notify3';
+          } else {
             return null;
           }
         },
@@ -526,7 +589,7 @@ class _CashInState extends State<CashIn> {
               });
             },
           ),
-          Text(' CASH IN'),
+          Text('cashin'.tr()),
           SizedBox(
             width: 20,
           ),
@@ -540,7 +603,7 @@ class _CashInState extends State<CashIn> {
               });
             },
           ),
-          Text(' CASH OUT'),
+          Text('cashout'.tr()),
         ],
       );
 
@@ -563,7 +626,7 @@ class _CashInState extends State<CashIn> {
       selectableDayPredicate: (date) => date.day != 32,
       locale: 'en_US');
 
-  Widget CashIn(icon, index, color, value) {
+  Widget CashIn(icon, index, color, value, text) {
     return OutlineButton(
       onPressed: () {
         stateOut(value);
@@ -581,7 +644,7 @@ class _CashInState extends State<CashIn> {
             child: Column(
               children: <Widget>[
                 icon,
-                Text(value,
+                Text(text,
                     style: TextStyle(
                       color: color,
                     ))
@@ -591,7 +654,7 @@ class _CashInState extends State<CashIn> {
     );
   }
 
-  Widget CashOut(icon, index, color, value) {
+  Widget CashOut(icon, index, color, value, text) {
     return OutlineButton(
       onPressed: () {
         stateIn(value);
@@ -609,7 +672,7 @@ class _CashInState extends State<CashIn> {
             child: Column(
               children: <Widget>[
                 icon,
-                Text(value,
+                Text(text,
                     style: TextStyle(
                       color: color,
                     ))

@@ -21,7 +21,7 @@ class _ChartState extends State<Chart> {
     Colors.blue,
     Colors.yellow,
   ];
-  double food;
+  double food = 0.0, shopping = 0.0;
   final db = Firestore.instance;
 
   @override
@@ -29,8 +29,12 @@ class _ChartState extends State<Chart> {
     super.initState();
     getUser();
     dashboard();
+    print(food);
+    dataMap.putIfAbsent("Flutter", () => food/10);
+    dataMap.putIfAbsent("React", () => 3);
+    dataMap.putIfAbsent("Xamarin", () => 2);
+    dataMap.putIfAbsent("Ionic", () => 2);
   }
-
 
   Future<void> getUser() async {
     sp = await SharedPreferences.getInstance();
@@ -40,7 +44,6 @@ class _ChartState extends State<Chart> {
   }
 
   void dashboard() async {
-    double food;
     if (await ConnectionVerify.connectionStatus()) {
       db
           .collection('post')
@@ -48,29 +51,14 @@ class _ChartState extends State<Chart> {
           .where('mobile', isEqualTo: mobile)
           .snapshots()
           .listen((snapshot) {
-          food = 0.0;
+        food = 0.0;
         snapshot.documents.forEach((doc) {
           setState(() {
-            food += double.parse(doc.data['amount']);
-            dataMap.putIfAbsent("Food", () => food);
+            this.food += double.parse(doc.data['amount']);
+            print(food);
           });
         });
-        });
-       double shopping;
-              db
-          .collection('post')
-          .where('purpose', isEqualTo: 'Shopping')
-          .where('mobile', isEqualTo: mobile)
-          .snapshots()
-          .listen((snapshot) {
-          shopping = 0.0;
-        snapshot.documents.forEach((doc) {
-          setState(() {
-            food += double.parse(doc.data['amount']);
-            dataMap.putIfAbsent("Shopping", () => shopping);
-          });
-        });
-        });
+      });
     }
   }
 

@@ -29,7 +29,7 @@ class _LogState extends State<Log> {
   _submit() async {
     if (_formKey.currentState.validate()) {
       if (await ConnectionVerify.connectionStatus()) {
-        pr.update(message: 'Please Wait');
+        pr.update(message: 'progress_wait'.tr());
         pr.show();
         db
             .collection('users')
@@ -49,11 +49,11 @@ class _LogState extends State<Log> {
             Navigator.pushReplacement(context, route);
           } else {
             pr.hide();
-            toast("Something went wrong");
+            toast("connection_notify1".tr());
           }
         });
       } else {
-        toast("Network Connection Lost");
+        toast("connection_notify2".tr());
       }
     }
   }
@@ -104,7 +104,7 @@ class _LogState extends State<Log> {
                     child: Column(
                       children: <Widget>[
                         Text(
-                          'sign'.tr(),
+                          'signin'.tr(),
                           textAlign: TextAlign.start,
                           style: TextStyle(color: Colors.orange, fontSize: 25),
                         ),
@@ -123,7 +123,7 @@ class _LogState extends State<Log> {
                               ),
                               validator: (value) {
                                 if (value.isEmpty) {
-                                  return 'Please enter mobile no';
+                                  return 'signin_notify1'.tr();
                                 } 
                                 // else if (value.length != 11) {
                                 //   return 'Mobile no must be 11 Digits';
@@ -161,7 +161,7 @@ class _LogState extends State<Log> {
                                 //fillColor: Colors.green
                                 validator: (value) {
                                   if (value.isEmpty) {
-                                    return 'Please enter password';
+                                    return 'signin_notify2'.tr();
                                   }
                                   return null;
                                 },

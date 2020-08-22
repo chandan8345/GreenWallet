@@ -48,10 +48,10 @@ class _HomeState extends State<Home> {
       this.name = sp.getString('name');
       this.mobile = sp.getString('mobile');
       this.imageUrl = sp.getString('imgurl');
-    //   this.ln = sp.getString('ln');
-    //   ln != "EN"
-    //       ? this.locale = Locale('bn', 'BD')
-    //       : this.locale = Locale('en', 'US');
+      //   this.ln = sp.getString('ln');
+      //   ln != "EN"
+      //       ? this.locale = Locale('bn', 'BD')
+      //       : this.locale = Locale('en', 'US');
     });
   }
 
@@ -125,41 +125,41 @@ class _HomeState extends State<Home> {
                           UserInfo(name, mobile),
                         ],
                       ),
-                      GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isChecked = !isChecked;
-                              if (context.locale.toString().contains('en_US')) {
-                                context.locale = Locale('bn', 'BD');
-                              } else {
-                                context.locale = Locale('en', 'US');
-                              }
-                            });
-                          },
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                'ln'.tr(),
-                                style: TextStyle(
-                                    color: Colors.white70,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              CustomSwitchButton(
-                                backgroundColor: Colors.white,
-                                unCheckedColor: Colors.pink,
-                                animationDuration: Duration(milliseconds: 100),
-                                buttonHeight: 25,
-                                checkedColor: Colors.green,
-                                checked: isChecked,
-                              ),
-                              SizedBox(
-                                width: 25,
-                              )
-                            ],
-                          ))
+                      Row(
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                isChecked = !isChecked;
+                                if (context.locale
+                                    .toString()
+                                    .contains('en_US')) {
+                                  context.locale = Locale('bn', 'BD');
+                                } else {
+                                  context.locale = Locale('en', 'US');
+                                }
+                              });
+                            },
+                            child: Text(
+                              'ln'.tr(),
+                              style: TextStyle(
+                                  color: Colors.white70,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          // CustomSwitchButton(
+                          //   backgroundColor: Colors.white,
+                          //   unCheckedColor: Colors.pink,
+                          //   animationDuration: Duration(milliseconds: 100),
+                          //   buttonHeight: 25,
+                          //   checkedColor: Colors.green,
+                          //   checked: isChecked,
+                          // ),
+                          SizedBox(
+                            width: 25,
+                          )
+                        ],
+                      )
                     ],
                   ),
                 ])),
@@ -189,21 +189,24 @@ class _HomeState extends State<Home> {
                     color: Colors.white,
                   ),
                   onPressed: () {
+                    try{
                     sp.clear();
                     Navigator.pop(context);
+                    }catch(e){
+                      print(e);
+                    }
                   }),
-              IconButton(
-                  icon: Icon(
-                    Icons.insert_chart,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Chart()),
-                    );
-                  }),
+              // IconButton(
+              //     icon: Icon(
+              //       Icons.insert_chart,
+              //       color: Colors.white,
+              //     ),
+              //     onPressed: () {
+              //       Navigator.push(
+              //         context,
+              //         MaterialPageRoute(builder: (context) => Chart()),
+              //       );
+              //     }),
               IconButton(
                   icon: Icon(
                     Icons.account_balance_wallet,
@@ -483,7 +486,7 @@ class inOut extends StatelessWidget {
               ),
             ),
             Text(
-              'statement'.tr(),
+              'cashin'.tr(),
               style: TextStyle(fontSize: 10, color: Colors.white60),
             ),
           ],
