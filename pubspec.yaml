@@ -11,13 +11,15 @@ description: A new Flutter project.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+5
+version: 1.0.0+6
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
@@ -28,7 +30,7 @@ dependencies:
   avatar_glow: ^1.2.0
   fradio: ^1.0.1
   calendar_timeline: ^0.6.0
-  intl: ^0.16.1
+  easy_localization: ^2.3.2
   fab_circular_menu: ^1.0.0
   awesome_button: ^1.0.2
   jiffy: ^3.0.1
@@ -37,11 +39,12 @@ dependencies:
   fluttertoast: ^7.0.1+1
   shared_preferences: ^0.5.8
   connection_verify: ^1.0.4
+  custom_switch_button: ^0.5.0
+  pie_chart: ^3.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -57,6 +60,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
    - images/
+   - lang/en-US.json
+   - lang/bn-BD.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -83,3 +88,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+flutter_intl:
+  enabled: true

@@ -8,6 +8,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/pages/home.dart';
 import 'package:wallet/pages/register.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Log extends StatefulWidget {
   Log({Key key}) : super(key: key);
@@ -64,6 +65,7 @@ class _LogState extends State<Log> {
     sp.setString('password', password);
     sp.setString('email', email);
     sp.setString('imgurl', image);
+    sp.setString('ln','EN');
     print('sucess store');
   }
 
@@ -102,7 +104,7 @@ class _LogState extends State<Log> {
                     child: Column(
                       children: <Widget>[
                         Text(
-                          'SIGN IN',
+                          'sign'.tr(),
                           textAlign: TextAlign.start,
                           style: TextStyle(color: Colors.orange, fontSize: 25),
                         ),
@@ -113,7 +115,7 @@ class _LogState extends State<Log> {
                             child: TextFormField(
                               controller: mobileCtrl,
                               decoration: new InputDecoration(
-                                labelText: 'Mobile',
+                                labelText: 'mobile'.tr(),
                                 fillColor: Colors.white,
                                 icon: Icon(Icons.phone),
                                 border: UnderlineInputBorder(),
@@ -151,7 +153,7 @@ class _LogState extends State<Log> {
                                 controller: passwordCtrl,
                                 obscureText: true,
                                 decoration: new InputDecoration(
-                                  labelText: 'Password',
+                                  labelText: 'pass'.tr(),
                                   fillColor: Colors.white,
                                   icon: Icon(Icons.lock),
                                   border: UnderlineInputBorder(),
@@ -192,7 +194,7 @@ class _LogState extends State<Log> {
                             Navigator.pushReplacement(context, route);
                           },
                           child: Text(
-                            "Need an account? Tap Here",
+                            "demo".tr(),
                             style: TextStyle(color: Colors.blue),
                           ),
                         ),
@@ -218,7 +220,7 @@ class _LogState extends State<Log> {
                     child: InkWell(
                       onTap: _submit,
                       child:
-                          roundedRectButton("Submit ", signInGradients, false),
+                          roundedRectButton("submit".tr(), signInGradients, false),
                     ),
                   )
                 ],

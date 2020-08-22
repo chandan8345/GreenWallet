@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wallet/pages/log.dart';
 import 'package:wallet/pages/register.dart';
 import 'util.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Membership extends StatefulWidget {
   Membership({Key key}) : super(key: key);
@@ -34,7 +35,7 @@ class _MembershipState extends State<Membership> {
                 child: Column(
                   children: <Widget>[
                     Text(
-                      'G R E E N  W A L L E T',
+                      'appname'.tr(),
                       style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w600,
@@ -50,7 +51,7 @@ class _MembershipState extends State<Membership> {
                     // ),
                     SizedBox(height: 15),
                     Text(
-                      "Virtual Wallet is Checking & Savings together. A high interest savings, a short-term savings, and checking account, paired with our digital money",
+                      'details'.tr(),
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
@@ -116,8 +117,8 @@ class _MembershipState extends State<Membership> {
       ),
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
       child: Center(
-        child: const Text(
-          'Login',
+        child: Text(
+          'log'.tr(),
           style: TextStyle(
               fontSize: 18, fontWeight: FontWeight.w500),
         ),
@@ -161,8 +162,8 @@ class _MembershipState extends State<Membership> {
       ),
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
       child: Center(
-        child: const Text(
-          'Register',
+        child: Text(
+          'reg'.tr(),
           style: TextStyle(
               fontSize: 18, fontWeight: FontWeight.w500),
         ),

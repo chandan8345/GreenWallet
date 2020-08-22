@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connection_verify/connection_verify.dart';
+import 'package:custom_switch_button/custom_switch_button.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -9,6 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/pages/cash.dart';
+import 'package:wallet/pages/chart.dart';
 import 'package:wallet/pages/updateCash.dart';
 
 int index;
@@ -25,6 +28,7 @@ class _HomeState extends State<Home> {
   List list;
   SharedPreferences sp;
   final db = Firestore.instance;
+  bool isChecked = false;
 
   @override
   void initState() {
@@ -44,6 +48,10 @@ class _HomeState extends State<Home> {
       this.name = sp.getString('name');
       this.mobile = sp.getString('mobile');
       this.imageUrl = sp.getString('imgurl');
+    //   this.ln = sp.getString('ln');
+    //   ln != "EN"
+    //       ? this.locale = Locale('bn', 'BD')
+    //       : this.locale = Locale('en', 'US');
     });
   }
 
@@ -100,8 +108,62 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.grey[50],
         body: Column(
           children: <Widget>[
-            walletTop(
-                name, mobile, imageUrl, _amount, _cashIn, _cashOut, context),
+            Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height / 5.8,
+                color: Colors.green,
+                child: Column(children: <Widget>[
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Avater(imageUrl),
+                          UserInfo(name, mobile),
+                        ],
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isChecked = !isChecked;
+                              if (context.locale.toString().contains('en_US')) {
+                                context.locale = Locale('bn', 'BD');
+                              } else {
+                                context.locale = Locale('en', 'US');
+                              }
+                            });
+                          },
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                'ln'.tr(),
+                                style: TextStyle(
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              CustomSwitchButton(
+                                backgroundColor: Colors.white,
+                                unCheckedColor: Colors.pink,
+                                animationDuration: Duration(milliseconds: 100),
+                                buttonHeight: 25,
+                                checkedColor: Colors.green,
+                                checked: isChecked,
+                              ),
+                              SizedBox(
+                                width: 25,
+                              )
+                            ],
+                          ))
+                    ],
+                  ),
+                ])),
+            walletTop(_amount, _cashIn, _cashOut, isChecked, context),
             walletTab(tabIndex),
             walletPost(tabIndex, list),
           ],
@@ -129,6 +191,18 @@ class _HomeState extends State<Home> {
                   onPressed: () {
                     sp.clear();
                     Navigator.pop(context);
+                  }),
+              IconButton(
+                  icon: Icon(
+                    Icons.insert_chart,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Chart()),
+                    );
                   }),
               IconButton(
                   icon: Icon(
@@ -161,19 +235,19 @@ class _HomeState extends State<Home> {
               tabs: <Widget>[
                 Tab(
                   child: Text(
-                    'STATEMENTS',
+                    'statement',
+                    style: TextStyle(color: Colors.black),
+                  ).tr(),
+                ),
+                Tab(
+                  child: Text(
+                    'cashin'.tr(),
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
                 Tab(
                   child: Text(
-                    'MONEY IN',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-                Tab(
-                  child: Text(
-                    'MONEY OUT',
+                    'cashout'.tr(),
                     style: TextStyle(color: Colors.black),
                   ),
                 )
@@ -375,26 +449,12 @@ Widget post(values, context) => Card(
                 ],
               ))),
     );
-Widget walletTop(name, mobile, imageUrl, amount, cashIn, cashOut, context) =>
-    Container(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height / 2.6,
+Widget walletTop(amount, cashIn, cashOut, isChecked, context) => Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height / 5,
       color: Colors.green,
       child: Column(
         children: <Widget>[
-          SizedBox(
-            height: 15,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Avater(imageUrl),
-              UserInfo(name, mobile),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
           balance(amount),
           SizedBox(
             height: 30,
@@ -423,7 +483,7 @@ class inOut extends StatelessWidget {
               ),
             ),
             Text(
-              'MONEY IN',
+              'statement'.tr(),
               style: TextStyle(fontSize: 10, color: Colors.white60),
             ),
           ],
@@ -440,7 +500,7 @@ class inOut extends StatelessWidget {
               ),
             ),
             Text(
-              'MONEY OUT',
+              'cashout'.tr(),
               style: TextStyle(fontSize: 10, color: Colors.white60),
             ),
           ],
@@ -463,7 +523,7 @@ class balance extends StatelessWidget {
             style: TextStyle(fontSize: 32, color: Colors.white),
           ),
           Text(
-            'B A L A N C E',
+            'balance'.tr(),
             style: TextStyle(fontSize: 10, color: Colors.white60),
           ),
         ],

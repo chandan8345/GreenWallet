@@ -1,0 +1,21 @@
+{
+    "statement": "STATEMENTS",
+    "cashin":"CASH IN",
+    "cashout":"CASH OUT",
+    "balance":"B A L A N C E",
+    "ln":"বাংলা",
+
+    "appname":"G R E E N  W A L L E T",
+    "details":"Virtual Wallet is Checking & Savings together. A high interest savings, a short-term savings, and checking account, paired with our digital money",
+    "lets":"Get Started",
+
+    "log":"Login",
+    "reg":"Registration",
+
+    "sign":"SIGN IN",
+    "mobile":"Mobile",
+    "pass":"Password",
+    "submit":"Submit",
+    "demo":"Need an account? Tap Here"
+
+}

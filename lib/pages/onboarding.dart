@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/pages/home.dart';
 import 'package:wallet/pages/membership.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'util.dart';
 
 class Onboarding extends StatefulWidget {
@@ -50,7 +51,7 @@ class _OnboardingState extends State<Onboarding> {
                 child: Column(
                   children: <Widget>[
                     Text(
-                      'G R E E N  W A L L E T',
+                      'appname'.tr(),
                       style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w600,
@@ -58,7 +59,7 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                     SizedBox(height: 20),
                     Text(
-                      "Virtual Wallet is Checking & Savings together. A high interest savings, a short-term savings, and checking account, paired with our digital money",
+                      "details".tr(),
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
@@ -121,8 +122,8 @@ class _OnboardingState extends State<Onboarding> {
       ),
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
       child: Center(
-        child: const Text(
-          'Get Started',
+        child: Text(
+          'lets'.tr(),
           style: TextStyle(
               fontSize: 18, fontWeight: FontWeight.w500),
         ),
