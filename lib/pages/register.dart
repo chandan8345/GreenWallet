@@ -51,6 +51,8 @@ class _RegisterState extends State<Register> {
         if (await ConnectionVerify.connectionStatus()) {
           pr.update(message: 'progress_wait'.tr());
           pr.show();
+          dynamic a=exist();
+          if(a!=false){
           StorageReference ref =
               storageReference.child("images/").child("$mobile");
           StorageUploadTask task = ref.putFile(_image);
@@ -77,13 +79,32 @@ class _RegisterState extends State<Register> {
               toast("exist".tr());
             }
           });
-        } else {
+        }else{
+          toast("exist".tr());
+        }
+         }else {
           toast("connection_notify2".tr());
         }
       }
     } else {
       getImage();
     }
+  }
+
+  Future<bool> exist() async {
+    bool status=false;
+    db
+        .collection('users')
+        .where("mobile", isEqualTo: mobile)
+        .getDocuments()
+        .then((querySnapshot) {
+      querySnapshot.documents.forEach((result) {
+        setState(() {
+          status=true;
+        });
+      });
+    });
+    return status;
   }
 
   Future getImage() async {
@@ -96,7 +117,7 @@ class _RegisterState extends State<Register> {
   void toast(String text) {
     Fluttertoast.showToast(
         msg: "$text",
-        toastLength: Toast.LENGTH_SHORT,
+        toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
         backgroundColor: Colors.green,
@@ -224,37 +245,36 @@ class _RegisterState extends State<Register> {
                       Padding(
                         padding: EdgeInsets.only(
                             left: 20, right: 20, bottom: 0, top: 0),
-                        child:
-                            TextFormField(
-                              controller: mobileCtrl,
-                              decoration: new InputDecoration(
-                                labelText: 'mobile'.tr(),
-                                fillColor: Colors.white,
-                                icon: Icon(Icons.phone),
-                                border: UnderlineInputBorder(),
-                                //fillColor: Colors.green
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'signin_notify1'.tr();
-                                } 
-                                // else if (value.length != 11) {
-                                //   return 'Mobile no must be 11 Digits';
-                                // }
-                                 else {
-                                  return null;
-                                }
-                              },
-                              keyboardType: TextInputType.phone,
-                              style: new TextStyle(
-                                fontFamily: "Poppins",
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  this.mobile = value;
-                                });
-                              },
-                            ),
+                        child: TextFormField(
+                          controller: mobileCtrl,
+                          decoration: new InputDecoration(
+                            labelText: 'mobile'.tr(),
+                            fillColor: Colors.white,
+                            icon: Icon(Icons.phone),
+                            border: UnderlineInputBorder(),
+                            //fillColor: Colors.green
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'signin_notify1'.tr();
+                            }
+                            // else if (value.length != 11) {
+                            //   return 'Mobile no must be 11 Digits';
+                            // }
+                            else {
+                              return null;
+                            }
+                          },
+                          keyboardType: TextInputType.phone,
+                          style: new TextStyle(
+                            fontFamily: "Poppins",
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              this.mobile = value;
+                            });
+                          },
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(

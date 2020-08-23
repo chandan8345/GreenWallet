@@ -28,7 +28,7 @@
     "register":"Register",
     "demo2":"Already Register? Go to Sign in Page",
     "reg_sucess" : "Registration Success",
-    "exist":"Sorry, Already Exist",
+    "exist":"Sorry, You are create account already",
     "name":"Name",
     "email":"Email",
     "signup_notify1":"Please enter your name",
@@ -36,6 +36,7 @@
     "signup_notify3":"Please enter valid email",
 
     "data_saved":"Saved Successfuly",
+    "data_update":"Update Successfuly",
     "save":"Save",
     "cash_in_out":"CASH IN-OUT",
     "amount":"Amount",

@@ -122,7 +122,7 @@ class _CashInState extends State<CashIn> {
   void toast(String text) {
     Fluttertoast.showToast(
         msg: "$text",
-        toastLength: Toast.LENGTH_SHORT,
+        toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
         backgroundColor: Colors.pink,
@@ -558,7 +558,7 @@ class _CashInState extends State<CashIn> {
           } else if (double.parse(val) == 0.0) {
             return cashType != "OUT"
                 ? 'moneyin_notify1'.tr()
-                : 'moneyout_notify3';
+                : 'moneyout_notify3'.tr();
           } else {
             return null;
           }

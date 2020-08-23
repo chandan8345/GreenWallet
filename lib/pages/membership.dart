@@ -11,10 +11,11 @@ class Membership extends StatefulWidget {
 }
 
 class _MembershipState extends State<Membership> {
-  int log=0;var user;
+  int log = 0;
+  var user;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
   }
 
@@ -27,7 +28,7 @@ class _MembershipState extends State<Membership> {
           child: Column(
             children: <Widget>[
               Expanded(
-                flex: 8,
+                flex: 7,
                 child: Image.asset('images/save.jpg'),
               ),
               Expanded(
@@ -49,7 +50,7 @@ class _MembershipState extends State<Membership> {
                     //       fontWeight: FontWeight.w400,
                     //       color: Colors.green),
                     // ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 20),
                     Text(
                       'details'.tr(),
                       style: TextStyle(
@@ -63,16 +64,15 @@ class _MembershipState extends State<Membership> {
                 ),
               ),
               Expanded(
-                child: Row(
-                  children: <Widget>[
-                    log == 0? login():SizedBox(),
-                    log == 0? width():SizedBox(),
-                    log == 0? register():SizedBox(),
-                    ///if (log != 0) Welcome(),
-                ],
-                )
-              ),
+                  child: Row(
+                children: <Widget>[
+                  log == 0 ? login() : SizedBox(),
+                  log == 0 ? width() : SizedBox(),
+                  log == 0 ? register() : SizedBox(),
 
+                  ///if (log != 0) Welcome(),
+                ],
+              )),
               Expanded(
                 flex: 1,
                 child: Container(),
@@ -83,95 +83,94 @@ class _MembershipState extends State<Membership> {
       ),
     );
   }
-  Widget login()=>RaisedButton(
-    onPressed: () {
-      Route route=MaterialPageRoute(builder: (context) => Log());
-      Navigator.pushReplacement(context, route);
-    },
-    textColor: Colors.white,
-    padding: const EdgeInsets.all(0.0),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8.0),
-    ),
-    child: Container(
-      width: MediaQuery.of(context).size.width / 2.3,
-      height: 60,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: <Color>[
-            CustomColors.GreenLight,
-            CustomColors.GreenDark,
-          ],
+
+  Widget login() => RaisedButton(
+        onPressed: () {
+          Route route = MaterialPageRoute(builder: (context) => Log());
+          Navigator.pushReplacement(context, route);
+        },
+        textColor: Colors.white,
+        padding: const EdgeInsets.all(0.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
         ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(8.0),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: CustomColors.GreenShadow,
-            blurRadius: 15.0,
-            spreadRadius: 7.0,
-            offset: Offset(0.0, 0.0),
+        child: Container(
+          width: MediaQuery.of(context).size.width / 2.3,
+          height: 60,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: <Color>[
+                CustomColors.GreenLight,
+                CustomColors.GreenDark,
+              ],
+            ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(8.0),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: CustomColors.GreenShadow,
+                blurRadius: 15.0,
+                spreadRadius: 7.0,
+                offset: Offset(0.0, 0.0),
+              ),
+            ],
           ),
-        ],
-      ),
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-      child: Center(
-        child: Text(
-          'log'.tr(),
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w500),
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          child: Center(
+            child: Text(
+              'log'.tr(),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            ),
+          ),
         ),
-      ),
-    ),
-  );
-  
-  Widget register()=>RaisedButton(
-    onPressed: () {
-      Route route=MaterialPageRoute(builder: (context) => Register());
-      Navigator.pushReplacement(context, route);
-    },
-    textColor: Colors.white,
-    padding: const EdgeInsets.all(0.0),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8.0),
-    ),
-    child: Container(
-      width: MediaQuery.of(context).size.width / 2.3,
-      height: 60,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: <Color>[
-            Colors.pinkAccent,
-            Colors.pink,
+      );
+
+  Widget register() => RaisedButton(
+        onPressed: () {
+          Route route = MaterialPageRoute(builder: (context) => Register());
+          Navigator.pushReplacement(context, route);
+        },
+        textColor: Colors.white,
+        padding: const EdgeInsets.all(0.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Container(
+          width: MediaQuery.of(context).size.width / 2.3,
+          height: 60,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: <Color>[
+                Colors.pinkAccent,
+                Colors.pink,
 //                              CustomColors.GreenLight,
 //                              CustomColors.GreenDark,
-          ],
-        ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(8.0),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: CustomColors.PurpleShadow,
-            blurRadius: 15.0,
-            spreadRadius: 7.0,
-            offset: Offset(0.0, 0.0),
+              ],
+            ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(8.0),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: CustomColors.PurpleShadow,
+                blurRadius: 15.0,
+                spreadRadius: 7.0,
+                offset: Offset(0.0, 0.0),
+              ),
+            ],
           ),
-        ],
-      ),
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-      child: Center(
-        child: Text(
-          'reg'.tr(),
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w500),
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          child: Center(
+            child: Text(
+              'reg'.tr(),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            ),
+          ),
         ),
-      ),
-    ),
-  );
-  
-  Widget width()=>SizedBox(
-    width: 10,
-  );
+      );
+
+  Widget width() => SizedBox(
+        width: 10,
+      );
 }

@@ -196,17 +196,17 @@ class _HomeState extends State<Home> {
                       print(e);
                     }
                   }),
-              // IconButton(
-              //     icon: Icon(
-              //       Icons.insert_chart,
-              //       color: Colors.white,
-              //     ),
-              //     onPressed: () {
-              //       Navigator.push(
-              //         context,
-              //         MaterialPageRoute(builder: (context) => Chart()),
-              //       );
-              //     }),
+              IconButton(
+                  icon: Icon(
+                    Icons.insert_chart,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Chart()),
+                    );
+                  }),
               IconButton(
                   icon: Icon(
                     Icons.account_balance_wallet,

@@ -65,7 +65,7 @@ class _LogState extends State<Log> {
     sp.setString('password', password);
     sp.setString('email', email);
     sp.setString('imgurl', image);
-    sp.setString('ln','EN');
+    sp.setString('ln', 'EN');
     print('sucess store');
   }
 
@@ -124,11 +124,11 @@ class _LogState extends State<Log> {
                               validator: (value) {
                                 if (value.isEmpty) {
                                   return 'signin_notify1'.tr();
-                                } 
+                                }
                                 // else if (value.length != 11) {
                                 //   return 'Mobile no must be 11 Digits';
                                 // }
-                                 else {
+                                else {
                                   return null;
                                 }
                               },
@@ -219,8 +219,8 @@ class _LogState extends State<Log> {
                   Center(
                     child: InkWell(
                       onTap: _submit,
-                      child:
-                          roundedRectButton("submit".tr(), signInGradients, false),
+                      child: roundedRectButton(
+                          "submit".tr(), signInGradients, false),
                     ),
                   )
                 ],
