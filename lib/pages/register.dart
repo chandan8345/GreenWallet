@@ -46,13 +46,13 @@ class _RegisterState extends State<Register> {
   }
 
   Future _submit() async {
-    if (_image != null) {
       if (_formKey.currentState.validate()) {
+        if (_image != null) {
         if (await ConnectionVerify.connectionStatus()) {
           pr.update(message: 'progress_wait'.tr());
           pr.show();
           dynamic a=exist();
-          if(a!=false){
+          if(a!=true){
           StorageReference ref =
               storageReference.child("images/").child("$mobile");
           StorageUploadTask task = ref.putFile(_image);
@@ -86,8 +86,9 @@ class _RegisterState extends State<Register> {
           toast("connection_notify2".tr());
         }
       }
-    } else {
-      getImage();
+      else{
+        getImage();
+      }
     }
   }
 
@@ -205,7 +206,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   Text(
-                    'signup'.tr(),
+                    'register'.tr(),
                     textAlign: TextAlign.start,
                     style: TextStyle(color: Colors.orange, fontSize: 25),
                   ),

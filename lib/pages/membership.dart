@@ -42,7 +42,7 @@ class _MembershipState extends State<Membership> {
                           fontWeight: FontWeight.w600,
                           color: Colors.green),
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 0),
                     // Text(
                     //   'Counseling Management System',
                     //   style: TextStyle(
