@@ -39,7 +39,7 @@
     "data_update":"Update Successfuly",
     "save":"Save",
     "cash_in_out":"CASH IN-OUT",
-    "amount":"Amount",
+    "amount":" Amount ",
     "cashin":" CASH IN",
     "cashout":" CASH OUT",
 
@@ -81,5 +81,6 @@
     "moneyout_notify3":"Cash out amount cant be Zero",
     "cash_in":"cash in",
     "cash_out":" cash out",
-    "greter":" greater than Balance "
+    "greter":" greater than balance ",
+    "smaller":" smaller than cashout "
 }

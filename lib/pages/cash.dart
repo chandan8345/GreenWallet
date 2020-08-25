@@ -2,7 +2,6 @@ import 'package:awesome_button/awesome_button.dart';
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connection_verify/connection_verify.dart';
-import 'package:custom_switch_button/custom_switch_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +22,7 @@ class _CashInState extends State<CashIn> {
   _CashInState(this.value);
   double value;
   final _formKey = GlobalKey<FormState>();
-  double _cashIn = 0.0, _cashOut = 0.0;
+  double _cashIn = 0.0, _cashOut = 0.0, totalIn = 0.0, totalOut = 0.0;
   TextEditingController amountCtrl = new TextEditingController();
   String mobile, amount, cashType = 'IN', inType = 'Salary', outType = 'Food';
   DateTime dateTime;
@@ -62,6 +61,7 @@ class _CashInState extends State<CashIn> {
       this.inType = value;
     });
   }
+
 
   Future<void> submit() async {
     if (_formKey.currentState.validate()) {
@@ -164,7 +164,9 @@ class _CashInState extends State<CashIn> {
                 icon: Text(
                   'reset'.tr(),
                   style: TextStyle(
-                      color: Colors.white70, fontWeight: FontWeight.bold,fontSize: 12),
+                      color: Colors.white70,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12),
                 ),
               ),
               IconButton(
@@ -178,7 +180,9 @@ class _CashInState extends State<CashIn> {
                 icon: Text(
                   'ln'.tr(),
                   style: TextStyle(
-                      color: Colors.white70, fontWeight: FontWeight.bold,fontSize: 12),
+                      color: Colors.white70,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12),
                 ),
               ),
             ],
@@ -554,8 +558,22 @@ class _CashInState extends State<CashIn> {
           } else if (double.parse(val) > value && cashType == 'OUT') {
             return cashType != "OUT"
                 ? 'cash_in'.tr()
-                : 'cash_out'.tr() + 'amount'.tr() + val.toString() +"greter".tr() + value.toString();
-          } else if (double.parse(val) == 0.0) {
+                : 'cash_out'.tr() +
+                    'amount'.tr() +
+                    val.toString() +
+                    "greter".tr() +
+                    value.toString();
+          } 
+          // else if (totalIn + double.parse(val) <= totalOut &&
+          //     cashType == 'IN') {
+          //   return cashType != "OUT"
+          //       ? 'cash_in'.tr()
+          //       : 'cash_out'.tr() +
+          //           'amount'.tr() +
+          //           val.toString() +
+          //           "smaller".tr();
+          // }
+           else if (double.parse(val) == 0.0) {
             return cashType != "OUT"
                 ? 'moneyin_notify1'.tr()
                 : 'moneyout_notify3'.tr();

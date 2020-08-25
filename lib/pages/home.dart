@@ -48,10 +48,6 @@ class _HomeState extends State<Home> {
       this.name = sp.getString('name');
       this.mobile = sp.getString('mobile');
       this.imageUrl = sp.getString('imgurl');
-      //   this.ln = sp.getString('ln');
-      //   ln != "EN"
-      //       ? this.locale = Locale('bn', 'BD')
-      //       : this.locale = Locale('en', 'US');
     });
   }
 

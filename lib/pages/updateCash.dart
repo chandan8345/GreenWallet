@@ -23,21 +23,25 @@ class _UpdateCashState extends State<UpdateCash> {
   String documentId;
   SharedPreferences sp;
   final _formKey = GlobalKey<FormState>();
-  double _cashIn = 0.0, _cashOut = 0.0, balance = 0.0;
+  double _cashIn = 0.0,
+      _cashOut = 0.0,
+      balance = 0.0,
+      totalIn = 0.0,
+      totalOut = 0.0;
   TextEditingController amountCtrl = new TextEditingController();
   String mobile, amount, cashType, inType, outType;
   DateTime dateTime;
   ProgressDialog pr;
-  DateTime _selectedDate;
+  DateTime _selectedDate = DateTime.now();
   final db = Firestore.instance;
-  int _selectedValueIn = 0, _selectedValueOut = 0;
+  int _selectedValueIn, _selectedValueOut;
 
   @override
   void initState() {
-    _resetSelectedDate();
+    super.initState();
+    getUser();
     data(documentId);
     dashboard();
-    super.initState();
   }
 
   Future<void> getUser() async {
@@ -74,8 +78,29 @@ class _UpdateCashState extends State<UpdateCash> {
         });
       });
     } else {
+      toast("connection_notify2".tr());
       data(val);
     }
+  }
+
+  Future bal(val) {
+    setState(() {
+      this.balance = val;
+    });
+  }
+
+  Future totalin(val) {
+    setState(() {
+      this.totalIn = val - double.parse(amount);
+    });
+    print(totalIn);
+  }
+
+  Future totalout(val) {
+    setState(() {
+      this.totalOut = val;
+    });
+    print(totalOut);
   }
 
   Future<void> submit() async {
@@ -90,7 +115,6 @@ class _UpdateCashState extends State<UpdateCash> {
         });
         pr.hide();
         toast("data_update".tr());
-        reset();
       } else {
         toast("connection_notify2".tr());
       }
@@ -105,10 +129,12 @@ class _UpdateCashState extends State<UpdateCash> {
           .where('mobile', isEqualTo: mobile)
           .snapshots()
           .listen((snapshot) {
+        _cashIn = 0.0;
         snapshot.documents.forEach((doc) {
           setState(() {
             this._cashIn += double.parse(doc.data['amount']);
           });
+          totalin(_cashIn);
         });
         db
             .collection('post')
@@ -116,14 +142,18 @@ class _UpdateCashState extends State<UpdateCash> {
             .where('mobile', isEqualTo: mobile)
             .snapshots()
             .listen((snapshot) {
+          _cashOut = 0.0;
           snapshot.documents.forEach((doc) {
             setState(() {
               this._cashOut += double.parse(doc.data['amount']);
             });
+            totalout(_cashOut);
           });
+          balance = 0.0;
           setState(() {
             this.balance = _cashIn - _cashOut;
           });
+          bal(balance);
         });
       });
     } else {
@@ -142,15 +172,15 @@ class _UpdateCashState extends State<UpdateCash> {
         fontSize: 16.0);
   }
 
-  void reset() {
-    setState(() {
-      amountCtrl.text = '';
-      inType = 'Salary';
-      cashType = 'IN';
-      outType = 'Food';
-      _resetSelectedDate();
-    });
-  }
+  // void reset() {
+  //   setState(() {
+  //     amountCtrl.text = '';
+  //     inType = 'Salary';
+  //     cashType = 'IN';
+  //     outType = 'Food';
+  //     _resetSelectedDate();
+  //   });
+  // }
 
   void _resetSelectedDate() {
     _selectedDate = DateTime.now();
@@ -169,12 +199,6 @@ class _UpdateCashState extends State<UpdateCash> {
             backgroundColor: Colors.green,
             title: Text('cash_in_out'.tr()),
             actions: <Widget>[
-              // IconButton(
-              //   onPressed: () {
-              //     reset();
-              //   }
-              //   icon: Icon(Icons.replay),
-              // )
               IconButton(
                 onPressed: () {
                   if (context.locale.toString().contains('en_US')) {
@@ -220,7 +244,7 @@ class _UpdateCashState extends State<UpdateCash> {
                       SizedBox(
                         height: 15,
                       ),
-                      calender(),
+                      calender(_selectedDate),
                       SizedBox(height: 40),
                       SubmitBtn()
                     ],
@@ -241,7 +265,7 @@ class _UpdateCashState extends State<UpdateCash> {
         onTap: () => submit(),
         color: Colors.green,
         child: Text(
-          "Save",
+          "save".tr(),
           style: TextStyle(
             color: Colors.white,
             fontSize: 18.0,
@@ -565,7 +589,18 @@ class _UpdateCashState extends State<UpdateCash> {
               cashType == 'OUT') {
             return cashType != "OUT"
                 ? 'cash_in'.tr()
-                : 'cash_out'.tr() + 'amount'.tr() + val.toString() +"greter".tr();
+                : 'cash_out'.tr() +
+                    'amount'.tr() +
+                    val.toString() +
+                    "greter".tr();
+          } else if (double.parse(val) == 0.0) {
+            return cashType != "OUT"
+                ? 'moneyin_notify1'.tr()
+                : 'moneyout_notify3'.tr();
+          } else if (totalIn + double.parse(val) < totalOut &&
+              cashType == 'IN') {
+            return 'cash_in'.tr() +
+                "smaller".tr();
           } else if (double.parse(val) == 0.0) {
             return cashType != "OUT"
                 ? 'moneyin_notify1'.tr()
@@ -578,14 +613,6 @@ class _UpdateCashState extends State<UpdateCash> {
         style: new TextStyle(
           fontFamily: "Poppins",
         ),
-        // onSaved: (String val) {
-        //   this.amount = val;
-        // },
-        // onChanged: (String val) {
-        //   setState(() {
-        //     this.amount = val;
-        //   });
-        // },
       );
 
   Widget cashtype() => Row(
@@ -594,11 +621,11 @@ class _UpdateCashState extends State<UpdateCash> {
             selectedColor: Colors.green,
             value: 'IN',
             groupValue: cashType,
-            onChanged: (value) {
-              setState(() {
-                cashType = value;
-              });
-            },
+            // onChanged: (value) {
+            //   setState(() {
+            //     cashType = value;
+            //   });
+            // },
           ),
           Text('cashin'.tr()),
           SizedBox(
@@ -608,18 +635,18 @@ class _UpdateCashState extends State<UpdateCash> {
             selectedColor: Colors.pink,
             value: 'OUT',
             groupValue: cashType,
-            onChanged: (value) {
-              setState(() {
-                cashType = value;
-              });
-            },
+            // onChanged: (value) {
+            //   setState(() {
+            //     cashType = value;
+            //   });
+            // },
           ),
           Text('cashout'.tr()),
         ],
       );
 
-  Widget calender() => CalendarTimeline(
-      initialDate: _selectedDate,
+  Widget calender(d) => CalendarTimeline(
+      initialDate: d,
       firstDate: DateTime(_selectedDate.year, 1, 1),
       lastDate: DateTime.now(), //.add(Duration(days: 365)),
       onDateSelected: (date) {
@@ -646,8 +673,7 @@ class _UpdateCashState extends State<UpdateCash> {
         });
       },
       borderSide: BorderSide(
-          color: _selectedValueIn == index ? color : Colors.transparent,
-          width: 2),
+          color: text == outType ? color : Colors.transparent, width: 2),
       child: Container(
           width: 90,
           height: 100,
@@ -674,8 +700,7 @@ class _UpdateCashState extends State<UpdateCash> {
         });
       },
       borderSide: BorderSide(
-          color: _selectedValueOut == index ? color : Colors.transparent,
-          width: 2),
+          color: text == inType ? color : Colors.transparent, width: 2),
       child: Container(
           width: 90,
           height: 100,
