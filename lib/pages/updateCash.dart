@@ -669,7 +669,7 @@ class _UpdateCashState extends State<UpdateCash> {
       onPressed: () {
         stateOut(value);
         setState(() {
-          _selectedValueIn = index;
+          _selectedValueOut = index;
         });
       },
       borderSide: BorderSide(
@@ -696,7 +696,7 @@ class _UpdateCashState extends State<UpdateCash> {
       onPressed: () {
         stateIn(value);
         setState(() {
-          _selectedValueOut = index;
+          _selectedValueIn = index;
         });
       },
       borderSide: BorderSide(

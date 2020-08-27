@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connection_verify/connection_verify.dart';
-import 'package:custom_switch_button/custom_switch_button.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -273,10 +272,10 @@ class _HomeState extends State<Home> {
                                   .orderBy("postingdate", descending: true)
                                   .snapshots(),
                               builder: (context, snapshot) {
-                                if (snapshot.data == null)
+                                if (snapshot.data == null){
                                   return Center(
-                                    child: Text("Loading..."),
-                                  );
+                                    child:Text("Data Not Found"),
+                                  );}else{
                                 return ListView.builder(
                                     itemCount:
                                         snapshot.data.documents.length != null
@@ -287,7 +286,7 @@ class _HomeState extends State<Home> {
                                       DocumentSnapshot data =
                                           snapshot.data.documents[index];
                                       return post(data, context);
-                                    });
+                                    });}
                               },
                             )
                           : StreamBuilder(
@@ -298,11 +297,11 @@ class _HomeState extends State<Home> {
                                   .orderBy("postingdate", descending: true)
                                   .snapshots(),
                               builder: (context, snapshot) {
-                                if (snapshot.data == null)
+                                if (snapshot.data == null){
                                   return Center(
-                                    child: Text("Loading..."),
-                                  );
-                                return ListView.builder(
+                                    child: Text("Data Not Found"),
+                                  );}else{
+                                    return ListView.builder(
                                     itemCount:
                                         snapshot.data.documents.length != null
                                             ? snapshot.data.documents.length
@@ -313,6 +312,7 @@ class _HomeState extends State<Home> {
                                           snapshot.data.documents[index];
                                       return post(data, context);
                                     });
+                                  }
                               },
                             )
                       : StreamBuilder<QuerySnapshot>(
@@ -322,17 +322,18 @@ class _HomeState extends State<Home> {
                               .orderBy("postingdate", descending: true)
                               .snapshots(),
                           builder: (context, snapshot) {
-                            if (snapshot.data == null)
+                            if (snapshot.data == null){
                               return Center(
-                                child: Text("Loading..."),
-                              );
-                            return ListView.builder(
+                                child:Text("Data Not Found"),
+                              );}else{
+                                return ListView.builder(
                                 itemCount: snapshot.data.documents.length,
                                 itemBuilder: (BuildContext ctxt, int index) {
                                   DocumentSnapshot data =
                                       snapshot.data.documents[index];
                                   return post(data, context);
                                 });
+                              }
                           }))),
         ],
       );
