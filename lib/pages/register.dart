@@ -109,7 +109,7 @@ class _RegisterState extends State<Register> {
   }
 
   Future getImage() async {
-    var img = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var img = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     setState(() {
       this._image = img;
     });
