@@ -268,7 +268,7 @@ class _HomeState extends State<Home> {
                               stream: Firestore.instance
                                   .collection('post')
                                   .where("cashtype", isEqualTo: 'IN')
-                                  .where("mobile", isEqualTo: mobile)
+                                  .where("mobile", isEqualTo: "$mobile")
                                   .orderBy("postingdate", descending: true)
                                   .snapshots(),
                               builder: (context, snapshot) {
@@ -285,7 +285,7 @@ class _HomeState extends State<Home> {
                                         (BuildContext ctxt, int index) {
                                       DocumentSnapshot data =
                                           snapshot.data.documents[index];
-                                      return post(data, context);
+                                      return data['mobile'] != mobile?null:post(data, context);
                                     });}
                               },
                             )
@@ -293,7 +293,7 @@ class _HomeState extends State<Home> {
                               stream: Firestore.instance
                                   .collection('post')
                                   .where('cashtype', isEqualTo: 'OUT')
-                                  .where("mobile", isEqualTo: mobile)
+                                  .where("mobile", isEqualTo: "$mobile")
                                   .orderBy("postingdate", descending: true)
                                   .snapshots(),
                               builder: (context, snapshot) {
@@ -310,7 +310,7 @@ class _HomeState extends State<Home> {
                                         (BuildContext ctxt, int index) {
                                       DocumentSnapshot data =
                                           snapshot.data.documents[index];
-                                      return post(data, context);
+                                      return data['mobile'] != mobile?null:post(data, context);
                                     });
                                   }
                               },
@@ -318,7 +318,7 @@ class _HomeState extends State<Home> {
                       : StreamBuilder<QuerySnapshot>(
                           stream: Firestore.instance
                               .collection('post')
-                              .where("mobile", isEqualTo: mobile)
+                              .where("mobile", isEqualTo: "$mobile")
                               .orderBy("postingdate", descending: true)
                               .snapshots(),
                           builder: (context, snapshot) {
@@ -331,7 +331,7 @@ class _HomeState extends State<Home> {
                                 itemBuilder: (BuildContext ctxt, int index) {
                                   DocumentSnapshot data =
                                       snapshot.data.documents[index];
-                                  return post(data, context);
+                                  return data['mobile'] != mobile?null:post(data, context);
                                 });
                               }
                           }))),
@@ -356,7 +356,7 @@ Widget post(values, context) => Card(
                   .document(values.documentID)
                   .delete();
               Fluttertoast.showToast(
-                  msg: "Remove Successfuly",
+                  msg: "remove".tr(),
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.CENTER,
                   timeInSecForIosWeb: 1,
@@ -365,7 +365,7 @@ Widget post(values, context) => Card(
                   fontSize: 16.0);
             } else {
               Fluttertoast.showToast(
-                  msg: "Network Conncetion Lost",
+                  msg: "connection_notify2".tr(),
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.CENTER,
                   timeInSecForIosWeb: 1,

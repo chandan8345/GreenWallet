@@ -35,8 +35,9 @@
     "signup_notify2":"Please enter email address",
     "signup_notify3":"Please enter valid email",
 
-    "data_saved":"Saved Successfuly",
-    "data_update":"Update Successfuly",
+    "data_saved":"Saved Successfully",
+    "data_update":"Update Successfully",
+    "remove":"Remove Successfully",
     "save":"Save",
     "cash_in_out":"CASH IN-OUT",
     "amount":" Amount ",

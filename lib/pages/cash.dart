@@ -649,11 +649,11 @@ class _CashInState extends State<CashIn> {
       onPressed: () {
         stateOut(value);
         setState(() {
-          _selectedValueIn = index;
+          _selectedValueOut = index;
         });
       },
       borderSide: BorderSide(
-          color: _selectedValueIn == index ? color : Colors.transparent,
+          color: _selectedValueOut == index ? color : Colors.transparent,
           width: 2),
       child: Container(
           width: 90,
@@ -677,11 +677,11 @@ class _CashInState extends State<CashIn> {
       onPressed: () {
         stateIn(value);
         setState(() {
-          _selectedValueOut = index;
+          _selectedValueIn = index;
         });
       },
       borderSide: BorderSide(
-          color: _selectedValueOut == index ? color : Colors.transparent,
+          color: _selectedValueIn == index ? color : Colors.transparent,
           width: 2),
       child: Container(
           width: 90,
