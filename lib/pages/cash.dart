@@ -24,7 +24,13 @@ class _CashInState extends State<CashIn> {
   final _formKey = GlobalKey<FormState>();
   double _cashIn = 0.0, _cashOut = 0.0, totalIn = 0.0, totalOut = 0.0;
   TextEditingController amountCtrl = new TextEditingController();
-  String mobile, amount, cashType = 'IN', inType = 'Salary', outType = 'Food';
+  TextEditingController detailsCtrl = new TextEditingController();
+  String mobile,
+      amount,
+      details,
+      cashType = 'IN',
+      inType = 'Salary',
+      outType = 'Food';
   DateTime dateTime;
   Locale locale;
   ProgressDialog pr;
@@ -62,7 +68,6 @@ class _CashInState extends State<CashIn> {
     });
   }
 
-
   Future<void> submit() async {
     if (_formKey.currentState.validate()) {
       if (await ConnectionVerify.connectionStatus()) {
@@ -72,6 +77,7 @@ class _CashInState extends State<CashIn> {
           'mobile': mobile,
           'cashtype': cashType,
           'amount': amount,
+          'details': details,
           'date': _selectedDate.toString(),
           'purpose': cashType != 'OUT' ? this.inType : this.outType,
           'postingdate': DateTime.now().toString()
@@ -203,6 +209,10 @@ class _CashInState extends State<CashIn> {
                   child: Column(
                     children: <Widget>[
                       money(),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Details(),
                       SizedBox(
                         height: 25,
                       ),
@@ -563,7 +573,7 @@ class _CashInState extends State<CashIn> {
                     val.toString() +
                     "greter".tr() +
                     value.toString();
-          } 
+          }
           // else if (totalIn + double.parse(val) <= totalOut &&
           //     cashType == 'IN') {
           //   return cashType != "OUT"
@@ -573,7 +583,7 @@ class _CashInState extends State<CashIn> {
           //           val.toString() +
           //           "smaller".tr();
           // }
-           else if (double.parse(val) == 0.0) {
+          else if (double.parse(val) == 0.0) {
             return cashType != "OUT"
                 ? 'moneyin_notify1'.tr()
                 : 'moneyout_notify3'.tr();
@@ -591,6 +601,31 @@ class _CashInState extends State<CashIn> {
         onChanged: (String val) {
           setState(() {
             this.amount = val;
+          });
+        },
+      );
+
+  Widget Details() => TextFormField(
+        controller: detailsCtrl,
+        maxLines: null,
+        keyboardType: TextInputType.text,
+        decoration: new InputDecoration(
+          labelText: 'note'.tr(),
+          fillColor: Colors.white,
+          //icon: Icon(Icons.border_color),
+          hintText: '',
+          border: OutlineInputBorder(),
+          //fillColor: Colors.green
+        ),
+        style: new TextStyle(
+          fontFamily: "Poppins",
+        ),
+        onSaved: (String val) {
+          this.details = val;
+        },
+        onChanged: (String val) {
+          setState(() {
+            this.details = val;
           });
         },
       );

@@ -40,7 +40,8 @@ class _OnboardingState extends State<Onboarding> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: 
+      Center(
         child: Container(
           width: MediaQuery.of(context).size.width / 1.1,
           child: Column(

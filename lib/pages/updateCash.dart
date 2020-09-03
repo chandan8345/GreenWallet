@@ -29,7 +29,8 @@ class _UpdateCashState extends State<UpdateCash> {
       totalIn = 0.0,
       totalOut = 0.0;
   TextEditingController amountCtrl = new TextEditingController();
-  String mobile, amount, cashType, inType, outType;
+  TextEditingController detailsCtrl = new TextEditingController();
+  String mobile, amount, details, cashType, inType, outType;
   DateTime dateTime;
   ProgressDialog pr;
   DateTime _selectedDate = DateTime.now();
@@ -68,13 +69,14 @@ class _UpdateCashState extends State<UpdateCash> {
       var doc = db.collection("post").document(val).snapshots();
       doc.listen((data) {
         setState(() {
+          this._selectedDate = DateTime.parse(data['date']);
           this.cashType = data['cashtype'];
+          detailsCtrl.text = data['details'];
           cashType != 'OUT'
               ? this.inType = data['purpose']
               : this.outType = data['purpose'];
           amountCtrl.text = data['amount'];
           this.amount = data['amount'];
-          this._selectedDate = DateTime.parse(data['date']);
         });
       });
     } else {
@@ -110,6 +112,7 @@ class _UpdateCashState extends State<UpdateCash> {
         pr.show();
         await db.collection("post").document(documentId).updateData({
           'amount': amountCtrl.text,
+          'details': detailsCtrl.text,
           'date': _selectedDate.toString(),
           'purpose': cashType != 'OUT' ? this.inType : this.outType,
         });
@@ -233,6 +236,10 @@ class _UpdateCashState extends State<UpdateCash> {
                   child: Column(
                     children: <Widget>[
                       money(),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Details(),
                       SizedBox(
                         height: 25,
                       ),
@@ -599,8 +606,7 @@ class _UpdateCashState extends State<UpdateCash> {
                 : 'moneyout_notify3'.tr();
           } else if (totalIn + double.parse(val) < totalOut &&
               cashType == 'IN') {
-            return 'cash_in'.tr() +
-                "smaller".tr();
+            return 'cash_in'.tr() + "smaller".tr();
           } else if (double.parse(val) == 0.0) {
             return cashType != "OUT"
                 ? 'moneyin_notify1'.tr()
@@ -613,6 +619,31 @@ class _UpdateCashState extends State<UpdateCash> {
         style: new TextStyle(
           fontFamily: "Poppins",
         ),
+      );
+
+  Widget Details() => TextFormField(
+        controller: detailsCtrl,
+        maxLines: null,
+        decoration: new InputDecoration(
+          labelText: 'note'.tr(),
+          fillColor: Colors.white,
+          //icon: Icon(Icons.border_color),
+          hintText: '',
+          border: OutlineInputBorder(),
+          //fillColor: Colors.green
+        ),
+        keyboardType: TextInputType.text,
+        style: new TextStyle(
+          fontFamily: "Poppins",
+        ),
+        onSaved: (String val) {
+          this.details = val;
+        },
+        onChanged: (String val) {
+          setState(() {
+            this.details = val;
+          });
+        },
       );
 
   Widget cashtype() => Row(

@@ -83,5 +83,6 @@
     "cash_in":"cash in",
     "cash_out":" cash out",
     "greter":" greater than balance ",
-    "smaller":" smaller than cashout "
+    "smaller":" smaller than cashout ",
+    "note":"Details"
 }
