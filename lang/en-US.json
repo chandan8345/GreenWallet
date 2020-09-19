@@ -84,5 +84,14 @@
     "cash_out":" cash out",
     "greter":" greater than balance ",
     "smaller":" smaller than cashout ",
-    "note":"Details"
+    "note":"Details",
+    "update": "Updating...",
+    "done":"Get update on Next Login",
+    "up":"Update",
+    "oldpass":"Old Password",
+    "newpass":"New Password",
+    "pass_notify1":"Please enter old password",
+    "pass_notify2":"Wrong old password",
+    "tap_image": "Tap on camera for upload image ",
+    "welcome": "Welcome "
 }

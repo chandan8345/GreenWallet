@@ -38,13 +38,15 @@ class _LogState extends State<Log> {
             .snapshots()
             .listen((data) {
           if (data.documents.length > 0) {
+            DocumentSnapshot d = data.documents[0];
             pr.hide();
             setSharedPreference(
                 data.documents[0]['name'],
                 data.documents[0]['mobile'],
                 data.documents[0]['email'],
                 data.documents[0]['password'],
-                data.documents[0]['image']);
+                data.documents[0]['image'],
+                d.documentID);
             Route route = MaterialPageRoute(builder: (context) => Home());
             Navigator.pushReplacement(context, route);
           } else {
@@ -53,12 +55,13 @@ class _LogState extends State<Log> {
           }
         });
       } else {
+        pr.hide();
         toast("connection_notify2".tr());
       }
     }
   }
 
-  Future setSharedPreference(name, mobile, email, password, image) async {
+  Future setSharedPreference(name, mobile, email, password, image, id) async {
     sp = await SharedPreferences.getInstance();
     sp.setString('name', name);
     sp.setString('mobile', mobile);
@@ -66,6 +69,7 @@ class _LogState extends State<Log> {
     sp.setString('email', email);
     sp.setString('imgurl', image);
     sp.setString('ln', 'EN');
+    sp.setString("userid", id);
     print('sucess store');
   }
 

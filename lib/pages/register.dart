@@ -31,6 +31,7 @@ class _RegisterState extends State<Register> {
   RegExp regex = new RegExp(pattern);
   File _image;
   List country;
+  bool status = false;
   ProgressDialog pr;
   final StorageReference storageReference = FirebaseStorage.instance.ref();
   final db = Firestore.instance;
@@ -51,8 +52,8 @@ class _RegisterState extends State<Register> {
         if (await ConnectionVerify.connectionStatus()) {
           pr.update(message: 'progress_wait'.tr());
           pr.show();
-          dynamic a=exist();
-          if(a!=true){
+          await exist();
+          if(status != false){
           StorageReference ref =
               storageReference.child("images/").child("$mobile");
           StorageUploadTask task = ref.putFile(_image);
@@ -73,6 +74,7 @@ class _RegisterState extends State<Register> {
               }).then((_) {
                 pr.hide();
                 toast("reg_sucess".tr());
+                this.status = false;
               });
             } else {
               pr.hide();
@@ -80,6 +82,7 @@ class _RegisterState extends State<Register> {
             }
           });
         }else{
+          pr.hide();
           toast("exist".tr());
         }
          }else {
@@ -92,8 +95,7 @@ class _RegisterState extends State<Register> {
     }
   }
 
-  Future<bool> exist() async {
-    bool status=false;
+  Future exist() async {
     db
         .collection('users')
         .where("mobile", isEqualTo: mobile)
@@ -101,11 +103,10 @@ class _RegisterState extends State<Register> {
         .then((querySnapshot) {
       querySnapshot.documents.forEach((result) {
         setState(() {
-          status=true;
+          this.status=true;
         });
       });
     });
-    return status;
   }
 
   Future getImage() async {
