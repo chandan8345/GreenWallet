@@ -16,7 +16,13 @@
     "mobile":"Mobile",
     "pass":"Password",
     "submit":"Submit",
-    "demo":"Need an account? Tap Here",
+    "demo":"Create Account? ",
+    "forgot":"Password Reset?",
+    "recover":"Recover Account",
+    "reg_mobile":"Registered Mobile",
+    "reg_mobile_empty":"please enter registered mobile no",
+    "mail":"password will be send to your provided email",
+    "send_email":"Send Mail",
     "signin_notify1":"Please enter mobile no",
     "signin_notify2":"Please enter password",
 
@@ -36,6 +42,7 @@
     "signup_notify3":"Please enter valid email",
 
     "data_saved":"Saved Successfully",
+    "check_mail":"Mail sent to your registered email",
     "data_update":"Update Successfully",
     "remove":"Remove Successfully",
     "save":"Save",

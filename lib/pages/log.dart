@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/pages/home.dart';
+import 'package:wallet/pages/recovery.dart';
 import 'package:wallet/pages/register.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -68,7 +69,6 @@ class _LogState extends State<Log> {
     sp.setString('password', password);
     sp.setString('email', email);
     sp.setString('imgurl', image);
-    sp.setString('ln', 'EN');
     sp.setString("userid", id);
     print('sucess store');
   }
@@ -110,7 +110,7 @@ class _LogState extends State<Log> {
                         Text(
                           'signin'.tr(),
                           textAlign: TextAlign.start,
-                          style: TextStyle(color: Colors.orange, fontSize: 25),
+                          style: TextStyle(color: Colors.green, fontSize: 25),
                         ),
                         Column(children: <Widget>[
                           Padding(
@@ -202,21 +202,21 @@ class _LogState extends State<Log> {
                             style: TextStyle(color: Colors.blue),
                           ),
                         ),
-                        // Text(
-                        //   "|",
-                        //   style: TextStyle(color: Colors.black),
-                        // ),
-                        // InkWell(
-                        //   onTap: () {
-                        //     //Route route = MaterialPageRoute(
-                        //     //builder: (context) => Forgot());
-                        //     //Navigator.push(context, route);
-                        //   },
-                        //   child: Text(
-                        //     "  Forgot Password",
-                        //     style: TextStyle(color: Colors.deepOrange),
-                        //   ),
-                        // )
+                        Text(
+                          "|",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Route route = MaterialPageRoute(
+                                builder: (context) => Forgot());
+                            Navigator.push(context, route);
+                          },
+                          child: Text(
+                            "forgot".tr(),
+                            style: TextStyle(color: Colors.deepOrange),
+                          ),
+                        )
                       ],
                     ),
                   ),
