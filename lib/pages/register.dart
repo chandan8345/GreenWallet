@@ -50,10 +50,11 @@ class _RegisterState extends State<Register> {
       if (_formKey.currentState.validate()) {
         if (_image != null) {
         if (await ConnectionVerify.connectionStatus()) {
+          exist();
           pr.update(message: 'progress_wait'.tr());
           pr.show();
-          await exist();
-          if(status != false){
+          print(status);
+          if(status != true){
           StorageReference ref =
               storageReference.child("images/").child("$mobile");
           StorageUploadTask task = ref.putFile(_image);
