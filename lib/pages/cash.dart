@@ -175,22 +175,22 @@ class _CashInState extends State<CashIn> {
                       fontSize: 12),
                 ),
               ),
-              IconButton(
-                onPressed: () {
-                  if (context.locale.toString().contains('en_US')) {
-                    context.locale = Locale('bn', 'BD');
-                  } else {
-                    context.locale = Locale('en', 'US');
-                  }
-                },
-                icon: Text(
-                  'ln'.tr(),
-                  style: TextStyle(
-                      color: Colors.white70,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12),
-                ),
-              ),
+              // IconButton(
+              //   onPressed: () {
+              //     if (context.locale.toString().contains('en_US')) {
+              //       context.locale = Locale('bn', 'BD');
+              //     } else {
+              //       context.locale = Locale('en', 'US');
+              //     }
+              //   },
+              //   icon: Text(
+              //     'ln'.tr(),
+              //     style: TextStyle(
+              //         color: Colors.white70,
+              //         fontWeight: FontWeight.bold,
+              //         fontSize: 12),
+              //   ),
+              // ),
             ],
             leading: IconButton(
               onPressed: () {
@@ -525,7 +525,7 @@ class _CashInState extends State<CashIn> {
                 Icons.flight,
                 size: 70,
               ),
-              15,
+              16,
               Colors.green,
               'Travel',
               'travel'.tr()),

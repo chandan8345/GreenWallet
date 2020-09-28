@@ -202,22 +202,22 @@ class _UpdateCashState extends State<UpdateCash> {
             backgroundColor: Colors.green,
             title: Text('cash_in_out'.tr()),
             actions: <Widget>[
-              IconButton(
-                onPressed: () {
-                  if (context.locale.toString().contains('en_US')) {
-                    context.locale = Locale('bn', 'BD');
-                  } else {
-                    context.locale = Locale('en', 'US');
-                  }
-                },
-                icon: Text(
-                  'ln'.tr(),
-                  style: TextStyle(
-                      color: Colors.white70,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12),
-                ),
-              ),
+              // IconButton(
+              //   onPressed: () {
+              //     if (context.locale.toString().contains('en_US')) {
+              //       context.locale = Locale('bn', 'BD');
+              //     } else {
+              //       context.locale = Locale('en', 'US');
+              //     }
+              //   },
+              //   icon: Text(
+              //     'ln'.tr(),
+              //     style: TextStyle(
+              //         color: Colors.white70,
+              //         fontWeight: FontWeight.bold,
+              //         fontSize: 12),
+              //   ),
+              // ),
             ],
             leading: IconButton(
               onPressed: () {
@@ -552,7 +552,7 @@ class _UpdateCashState extends State<UpdateCash> {
                 Icons.flight,
                 size: 70,
               ),
-              15,
+              16,
               Colors.green,
               'Travel',
               'travel'.tr()),

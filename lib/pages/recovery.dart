@@ -154,7 +154,7 @@ class _ForgotState extends State<Forgot> {
                     child: InkWell(
                       onTap: _submit,
                       child: roundedRectButton(
-                          "Send Email ", signInGradients, false),
+                          "send_email".tr(), signInGradients, false),
                     ),
                   )
                 ],
