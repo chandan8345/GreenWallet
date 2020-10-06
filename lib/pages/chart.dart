@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wallet/pages/cash.dart';
+import 'package:jiffy/jiffy.dart';
+import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 
 class Chart extends StatefulWidget {
   @override
@@ -33,11 +34,18 @@ class _ChartState extends State<Chart> {
   ];
   final db = Firestore.instance;
   dynamic a;
+  DateTime firstDate, lastDate, fd, ld;
+  int fy, ly;
 
   @override
   void initState() {
     super.initState();
     getUser();
+    range();
+    all();
+  }
+
+  void all() {
     dataMap1.putIfAbsent("IN | OUT", () => 0);
     dashboard();
     dataMap2.putIfAbsent("CASH IN", () => 0);
@@ -82,6 +90,18 @@ class _ChartState extends State<Chart> {
     });
   }
 
+  range() {
+    DateTime now = DateTime.now();
+    setState(() {
+      this.firstDate = now.subtract(Duration(days: now.day - 1));
+      this.lastDate = now;
+      this.fd = firstDate;
+      this.ld = lastDate;
+      this.fy = DateTime.now().year;
+      this.ly = DateTime.now().year + 1;
+    });
+  }
+
   void dashboard() async {
     double cashin, cashout, balance;
     if (await ConnectionVerify.connectionStatus()) {
@@ -89,6 +109,8 @@ class _ChartState extends State<Chart> {
           .collection('post')
           .where('cashtype', isEqualTo: 'IN')
           .where('mobile', isEqualTo: mobile)
+          .where('date', isGreaterThanOrEqualTo: fd.toString())
+          .where('date', isLessThanOrEqualTo: ld.toString())
           .snapshots()
           .listen((snapshot) {
         cashin = 0.0;
@@ -102,6 +124,8 @@ class _ChartState extends State<Chart> {
             .collection('post')
             .where('cashtype', isEqualTo: 'OUT')
             .where('mobile', isEqualTo: mobile)
+            .where('date', isGreaterThanOrEqualTo: fd.toString())
+            .where('date', isLessThanOrEqualTo: ld.toString())
             .snapshots()
             .listen((snapshot) {
           cashout = 0.0;
@@ -129,6 +153,8 @@ class _ChartState extends State<Chart> {
           .collection('post')
           .where('purpose', isEqualTo: purpose)
           .where('mobile', isEqualTo: mobile)
+          .where('date', isGreaterThanOrEqualTo: fd.toString())
+          .where('date', isLessThanOrEqualTo: ld.toString())
           .snapshots()
           .listen((snapshot) {
         i = 0.0;
@@ -149,6 +175,8 @@ class _ChartState extends State<Chart> {
           .collection('post')
           .where('purpose', isEqualTo: purpose)
           .where('mobile', isEqualTo: mobile)
+          .where('date', isGreaterThanOrEqualTo: fd.toString())
+          .where('date', isLessThanOrEqualTo: ld.toString())
           .snapshots()
           .listen((snapshot) {
         i = 0.0;
@@ -166,13 +194,35 @@ class _ChartState extends State<Chart> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chart'),
+        title: Text('chart'.tr()),
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: Icon(Icons.arrow_back),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.calendar_today),
+            onPressed: () async {
+              final List<DateTime> picked = await DateRagePicker.showDatePicker(
+                  context: context,
+                  initialFirstDate: fd,
+                  //add(new Duration(days: DateTime.now().day)),
+                  initialLastDate: ld,
+                  //(new DateTime.now()).add(new Duration(days: 7)),
+                  firstDate: new DateTime(fy),
+                  lastDate: new DateTime(ly));
+              if (picked != null && picked.length == 2) {
+                setState(() {
+                  this.fd = picked.first;
+                  this.ld = picked.last;
+                });
+                all();
+              }
+            },
+          )
+        ],
       ),
       body: ListView(
         scrollDirection: Axis.vertical,
@@ -245,6 +295,20 @@ class _ChartState extends State<Chart> {
               color: Colors.blueGrey[900].withOpacity(0.9),
             ),
             chartType: ChartType.ring,
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          Padding(
+            padding: EdgeInsets.only(left:20,right:20),
+            child:Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Text(Jiffy(fd).yMMMMd),
+              Text("|"),
+              Text(Jiffy(ld).yMMMMd),
+            ],
+          )
           )
         ],
       ),

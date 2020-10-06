@@ -11,7 +11,7 @@
 
     "log":"Login",
     "reg":"Registration",
-
+    "data":"Data Not Found",
     "signin":"SIGN IN",
     "mobile":"Mobile",
     "pass":"Password",
@@ -100,5 +100,13 @@
     "pass_notify1":"Please enter old password",
     "pass_notify2":"Wrong old password",
     "tap_image": "Tap on camera for upload image ",
-    "welcome": "Welcome "
+    "welcome": "Welcome ",
+    "io":"IN-OUT",
+    "chart":"Chart",
+    "logout":"Logout",
+    "close":"Close",
+    "date":"Date Range",
+    "logme":"Are you sure wants to logout?",
+    "exit":"Are you sure wants to close green wallet?",
+    "warning":"Warning"
 }
