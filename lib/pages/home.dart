@@ -11,6 +11,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/pages/cash.dart';
 import 'package:wallet/pages/chart.dart';
+import 'package:wallet/pages/log.dart';
 import 'package:wallet/pages/profileUpdate.dart';
 import 'package:wallet/pages/updateCash.dart';
 import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
@@ -25,7 +26,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String name, mobile, imageUrl;
   double _amount = 0.0, _cashIn = 0.0, _cashOut = 0.0;
-  int tabIndex = 0,fy,ly;
+  int tabIndex = 0, fy, ly;
   List list;
   SharedPreferences sp;
   final db = Firestore.instance;
@@ -170,10 +171,13 @@ class _HomeState extends State<Home> {
                   onPressedYes: () {
                     try {
                       sp.clear();
-                      Navigator.pop(context);
                     } catch (e) {
                       print(e);
                     }
+                    Navigator.of(context).pop();
+                    Route route =
+                        MaterialPageRoute(builder: (context) => Log());
+                    Navigator.push(context, route);
                   });
               break;
             case 4:

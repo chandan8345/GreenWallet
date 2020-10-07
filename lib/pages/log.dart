@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/pages/home.dart';
+import 'package:wallet/pages/onboarding.dart';
 import 'package:wallet/pages/recovery.dart';
 import 'package:wallet/pages/register.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -48,8 +49,9 @@ class _LogState extends State<Log> {
                 data.documents[0]['password'],
                 data.documents[0]['image'],
                 d.documentID);
+            Navigator.of(context).pop();
             Route route = MaterialPageRoute(builder: (context) => Home());
-            Navigator.pushReplacement(context, route);
+            Navigator.push(context, route);
           } else {
             pr.hide();
             toast("connection_notify1".tr());
@@ -88,152 +90,158 @@ class _LogState extends State<Log> {
   Widget build(BuildContext context) {
     pr = ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: true);
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Form(
-        key: _formKey,
-        child: ListView(children: <Widget>[
-          Padding(
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height / 2.9),
-          ),
-          Column(
-            children: <Widget>[
+    return WillPopScope(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Form(
+            key: _formKey,
+            child: ListView(children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 2.9),
+              ),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: 10, right: 10, bottom: 0, top: 10),
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'signin'.tr(),
-                          textAlign: TextAlign.start,
-                          style: TextStyle(color: Colors.green, fontSize: 25),
-                        ),
-                        Column(children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: 20, right: 20, bottom: 5, top: 0),
-                            child: TextFormField(
-                              controller: mobileCtrl,
-                              decoration: new InputDecoration(
-                                labelText: 'mobile'.tr(),
-                                fillColor: Colors.white,
-                                icon: Icon(Icons.phone),
-                                border: UnderlineInputBorder(),
-                                //fillColor: Colors.green
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'signin_notify1'.tr();
-                                }
-                                // else if (value.length != 11) {
-                                //   return 'Mobile no must be 11 Digits';
-                                // }
-                                else {
-                                  return null;
-                                }
-                              },
-                              keyboardType: TextInputType.phone,
-                              style: new TextStyle(
-                                fontFamily: "Poppins",
-                              ),
-                              onSaved: (String val) {
-                                this.mobile = val;
-                              },
-                              onChanged: (String val) {
-                                setState(() {
-                                  this.mobile = val;
-                                });
-                              },
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: 10, right: 10, bottom: 0, top: 10),
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              'signin'.tr(),
+                              textAlign: TextAlign.start,
+                              style:
+                                  TextStyle(color: Colors.green, fontSize: 25),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: 20, right: 20, bottom: 20, top: 0),
-                            child: TextFormField(
-                                controller: passwordCtrl,
-                                obscureText: true,
-                                decoration: new InputDecoration(
-                                  labelText: 'pass'.tr(),
-                                  fillColor: Colors.white,
-                                  icon: Icon(Icons.lock),
-                                  border: UnderlineInputBorder(),
+                            Column(children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: 20, right: 20, bottom: 5, top: 0),
+                                child: TextFormField(
+                                  controller: mobileCtrl,
+                                  decoration: new InputDecoration(
+                                    labelText: 'mobile'.tr(),
+                                    fillColor: Colors.white,
+                                    icon: Icon(Icons.phone),
+                                    border: UnderlineInputBorder(),
+                                    //fillColor: Colors.green
+                                  ),
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'signin_notify1'.tr();
+                                    }
+                                    // else if (value.length != 11) {
+                                    //   return 'Mobile no must be 11 Digits';
+                                    // }
+                                    else {
+                                      return null;
+                                    }
+                                  },
+                                  keyboardType: TextInputType.phone,
+                                  style: new TextStyle(
+                                    fontFamily: "Poppins",
+                                  ),
+                                  onSaved: (String val) {
+                                    this.mobile = val;
+                                  },
+                                  onChanged: (String val) {
+                                    setState(() {
+                                      this.mobile = val;
+                                    });
+                                  },
                                 ),
-                                //fillColor: Colors.green
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'signin_notify2'.tr();
-                                  }
-                                  return null;
-                                },
-                                style: new TextStyle(
-                                  fontFamily: "Poppins",
-                                ),
-                                onSaved: (String val) {
-                                  this.password = val;
-                                },
-                                onChanged: (String val) {
-                                  setState(() {
-                                    this.password = val;
-                                  });
-                                }),
-                          ),
-                        ]),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            Route route = MaterialPageRoute(
-                                builder: (context) => Register());
-                            Navigator.pushReplacement(context, route);
-                          },
-                          child: Text(
-                            "demo".tr(),
-                            style: TextStyle(color: Colors.blue),
-                          ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: 20, right: 20, bottom: 20, top: 0),
+                                child: TextFormField(
+                                    controller: passwordCtrl,
+                                    obscureText: true,
+                                    decoration: new InputDecoration(
+                                      labelText: 'pass'.tr(),
+                                      fillColor: Colors.white,
+                                      icon: Icon(Icons.lock),
+                                      border: UnderlineInputBorder(),
+                                    ),
+                                    //fillColor: Colors.green
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'signin_notify2'.tr();
+                                      }
+                                      return null;
+                                    },
+                                    style: new TextStyle(
+                                      fontFamily: "Poppins",
+                                    ),
+                                    onSaved: (String val) {
+                                      this.password = val;
+                                    },
+                                    onChanged: (String val) {
+                                      setState(() {
+                                        this.password = val;
+                                      });
+                                    }),
+                              ),
+                            ]),
+                          ],
                         ),
-                        Text(
-                          "|",
-                          style: TextStyle(color: Colors.black),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () {
+                                Route route = MaterialPageRoute(
+                                    builder: (context) => Register());
+                                Navigator.pushReplacement(context, route);
+                              },
+                              child: Text(
+                                "demo".tr(),
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                            Text(
+                              "|",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Route route = MaterialPageRoute(
+                                    builder: (context) => Forgot());
+                                Navigator.push(context, route);
+                              },
+                              child: Text(
+                                "forgot".tr(),
+                                style: TextStyle(color: Colors.deepOrange),
+                              ),
+                            )
+                          ],
                         ),
-                        InkWell(
-                          onTap: () {
-                            Route route = MaterialPageRoute(
-                                builder: (context) => Forgot());
-                            Navigator.push(context, route);
-                          },
-                          child: Text(
-                            "forgot".tr(),
-                            style: TextStyle(color: Colors.deepOrange),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Center(
-                    child: InkWell(
-                      onTap: _submit,
-                      child: roundedRectButton(
-                          "submit".tr(), signInGradients, false),
-                    ),
+                      ),
+                      Center(
+                        child: InkWell(
+                          onTap: _submit,
+                          child: roundedRectButton(
+                              "submit".tr(), signInGradients, false),
+                        ),
+                      )
+                    ],
                   )
                 ],
-              )
-            ],
+              ),
+            ]),
           ),
-        ]),
-      ),
-    );
+        ),
+        // ignore: missing_return
+        onWillPop: () {
+          Navigator.of(context).pop();
+        });
   }
 }
 
