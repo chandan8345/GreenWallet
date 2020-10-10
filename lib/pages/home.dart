@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/pages/cash.dart';
 import 'package:wallet/pages/chart.dart';
@@ -137,6 +138,7 @@ class _HomeState extends State<Home> {
           });
           switch (index) {
             case 0:
+              Navigator.pop(context);
               Route route = MaterialPageRoute(builder: (context) => CashIn());
               Navigator.push(context, route);
               break;
@@ -164,7 +166,7 @@ class _HomeState extends State<Home> {
               );
               break;
             case 3:
-              ConfirmAlertBoxDark(
+              ConfirmAlertBox(
                   context: context,
                   title: 'warning'.tr(),
                   infoMessage: 'logme'.tr(),
@@ -177,11 +179,11 @@ class _HomeState extends State<Home> {
                     Navigator.of(context).pop();
                     Route route =
                         MaterialPageRoute(builder: (context) => Log());
-                    Navigator.push(context, route);
+                    Navigator.pop(context, route);
                   });
               break;
             case 4:
-              ConfirmAlertBoxDark(
+              ConfirmAlertBox(
                   context: context,
                   title: 'warning'.tr(),
                   infoMessage: 'exit'.tr(),
@@ -485,6 +487,7 @@ Widget post(values, context) => Card(
       elevation: 1,
       child: InkWell(
           onDoubleTap: () {
+            Navigator.pop(context);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -529,24 +532,22 @@ Widget post(values, context) => Card(
                     width: 10,
                   ),
                   values['cashtype'] != 'OUT'
-                      ? CircleAvatar(
-                          backgroundColor: Colors.grey[100],
-                          child: Image.asset(
-                            'images/save.jpg',
-                            height: 50,
-                            fit: BoxFit.fill,
-                          ),
-                          radius: 25.0,
-                        )
-                      : CircleAvatar(
-                          backgroundColor: Colors.grey[100],
-                          child: Image.asset(
-                            'images/minus.jpg',
-                            height: 50,
-                            fit: BoxFit.fill,
-                          ),
-                          radius: 25.0,
-                        ),
+                      ? Lottie.asset('images/add.json')
+                      // Image.asset(
+                      //   'images/save.jpg',
+                      //   height: 50,
+                      //   fit: BoxFit.fill,
+                      // ),
+                      : Lottie.asset('images/minus.json'),
+                  // CircleAvatar(
+                  //     backgroundColor: Colors.grey[100],
+                  //     child: Image.asset(
+                  //       'images/minus.jpg',
+                  //       height: 50,
+                  //       fit: BoxFit.fill,
+                  //     ),
+                  //     radius: 25.0,
+                  //   ),
                   SizedBox(
                     width: 10,
                   ),

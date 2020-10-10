@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/pages/home.dart';
 import 'package:wallet/pages/membership.dart';
@@ -48,7 +49,8 @@ class _OnboardingState extends State<Onboarding> {
             children: <Widget>[
               Expanded(
                 flex: 7,
-                child: Image.asset('images/save.jpg'),
+                child: Lottie.asset('images/welcome.json'),          
+                //Image.asset('images/save.jpg'),
               ),
               Expanded(
                 flex: 2,
@@ -125,7 +127,7 @@ class _OnboardingState extends State<Onboarding> {
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: Center(
             child: Text(
-              'lets'.tr(),
+              'lets'.tr(),  
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
           ),

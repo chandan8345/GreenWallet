@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:wallet/pages/log.dart';
 import 'package:wallet/pages/register.dart';
 import 'util.dart';
@@ -29,7 +30,7 @@ class _MembershipState extends State<Membership> {
             children: <Widget>[
               Expanded(
                 flex: 7,
-                child: Image.asset('images/save.jpg'),
+                child: Lottie.asset('images/secure.json'),
               ),
               Expanded(
                 flex: 2,
@@ -52,7 +53,7 @@ class _MembershipState extends State<Membership> {
                     // ),
                     SizedBox(height: 20),
                     Text(
-                      'details'.tr(),
+                      'm1'.tr(),
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,

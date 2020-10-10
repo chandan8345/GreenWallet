@@ -108,5 +108,6 @@
     "date":"Date Range",
     "logme":"Are you sure wants to logout?",
     "exit":"Are you sure wants to close green wallet?",
-    "warning":"Warning"
+    "warning":"Warning",
+    "m1":"Green Wallet Secure App. You need to register here. After successful registrar can signin here. We keep it protect account from others."
 }

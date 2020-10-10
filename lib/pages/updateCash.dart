@@ -10,6 +10,7 @@ import 'package:fradio/fradio.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:wallet/pages/home.dart';
 
 class UpdateCash extends StatefulWidget {
   String id;
@@ -195,7 +196,9 @@ class _UpdateCashState extends State<UpdateCash> {
         type: ProgressDialogType.Normal, isDismissible: true);
     return WillPopScope(
         onWillPop: () {
-          Navigator.pop(context);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(builder: (context) => Home());
+              Navigator.push(context, route);
         },
         child: Scaffold(
           appBar: AppBar(

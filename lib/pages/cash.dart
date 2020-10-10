@@ -10,6 +10,7 @@ import 'package:fradio/fradio.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:wallet/pages/home.dart';
 
 class CashIn extends StatefulWidget {
   double value;
@@ -157,6 +158,8 @@ class _CashInState extends State<CashIn> {
     return WillPopScope(
         onWillPop: () {
           Navigator.pop(context);
+          Route route = MaterialPageRoute(builder: (context) => Home());
+          Navigator.push(context, route);
         },
         child: Scaffold(
           appBar: AppBar(
