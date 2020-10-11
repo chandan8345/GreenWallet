@@ -5,6 +5,7 @@ import 'package:wallet/pages/home.dart';
 import 'package:wallet/pages/membership.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'util.dart';
+import 'package:flutter/services.dart';
 
 class Onboarding extends StatefulWidget {
   Onboarding({Key key}) : super(key: key);
@@ -19,6 +20,7 @@ class _OnboardingState extends State<Onboarding> {
   @override
   void initState() {
     super.initState();
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
   }
 
   void go() async {

@@ -4,6 +4,7 @@ import 'package:wallet/pages/log.dart';
 import 'package:wallet/pages/register.dart';
 import 'util.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
 
 class Membership extends StatefulWidget {
   Membership({Key key}) : super(key: key);
@@ -18,6 +19,7 @@ class _MembershipState extends State<Membership> {
   @override
   void initState() {
     super.initState();
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
   }
 
   @override

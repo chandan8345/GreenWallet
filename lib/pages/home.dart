@@ -16,6 +16,7 @@ import 'package:wallet/pages/log.dart';
 import 'package:wallet/pages/profileUpdate.dart';
 import 'package:wallet/pages/updateCash.dart';
 import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
+import 'package:flutter/services.dart';
 
 int index;
 
@@ -38,6 +39,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
     range();
     getUser();
     dashboard();
