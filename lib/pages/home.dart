@@ -539,7 +539,7 @@ Widget post(values, context) => Card(
                       //   height: 50,
                       //   fit: BoxFit.fill,
                       // ),
-                      : Lottie.asset('images/minus.json',width: 50,height: 50),
+                      : Lottie.asset('images/minus.json',width: 45,height: 45),
                   // CircleAvatar(
                   //     backgroundColor: Colors.grey[100],
                   //     child: Image.asset(
