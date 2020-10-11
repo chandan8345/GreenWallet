@@ -49,9 +49,8 @@ class _LogState extends State<Log> {
                 data.documents[0]['password'],
                 data.documents[0]['image'],
                 d.documentID);
-            Navigator.of(context).pop();
             Route route = MaterialPageRoute(builder: (context) => Home());
-            Navigator.push(context, route);
+            Navigator.pushReplacement(context, route);
           } else {
             pr.hide();
             toast("connection_notify1".tr());

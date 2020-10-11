@@ -12,7 +12,7 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/pages/cash.dart';
 import 'package:wallet/pages/chart.dart';
-import 'package:wallet/pages/log.dart';
+import 'package:wallet/pages/onboarding.dart';
 import 'package:wallet/pages/profileUpdate.dart';
 import 'package:wallet/pages/updateCash.dart';
 import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
@@ -114,6 +114,7 @@ class _HomeState extends State<Home> {
       });
     } else {
       toast("connection_notify2".tr());
+      dashboard();
     }
   }
 
@@ -130,216 +131,233 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white12,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _bottomNavIndex,
-        onTap: (index) async {
-          setState(() {
-            this._bottomNavIndex = index;
-          });
-          switch (index) {
-            case 0:
-              Navigator.pop(context);
-              Route route = MaterialPageRoute(builder: (context) => CashIn());
-              Navigator.push(context, route);
-              break;
-            case 1:
-              final List<DateTime> picked = await DateRagePicker.showDatePicker(
-                  context: context,
-                  initialFirstDate: fd,
-                  //add(new Duration(days: DateTime.now().day)),
-                  initialLastDate: ld,
-                  //(new DateTime.now()).add(new Duration(days: 7)),
-                  firstDate: new DateTime(fy),
-                  lastDate: new DateTime(ly));
-              if (picked != null && picked.length == 2) {
-                setState(() {
-                  this.fd = picked.first;
-                  this.ld = picked.last;
-                });
-                dashboard();
-              }
-              break;
-            case 2:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Chart()),
-              );
-              break;
-            case 3:
-              ConfirmAlertBox(
-                  context: context,
-                  title: 'warning'.tr(),
-                  infoMessage: 'logme'.tr(),
-                  onPressedYes: () {
-                    try {
-                      sp.clear();
-                    } catch (e) {
-                      print(e);
-                    }
-                    Navigator.of(context).pop();
-                    Route route =
-                        MaterialPageRoute(builder: (context) => Log());
-                  });
-              break;
-            case 4:
-              ConfirmAlertBox(
-                  context: context,
-                  title: 'warning'.tr(),
-                  infoMessage: 'exit'.tr(),
-                  onPressedYes: () {
-                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  });
-              break;
-          }
+    return WillPopScope(
+        onWillPop: () {
+          ConfirmAlertBox(
+              context: context,
+              title: 'warning'.tr(),
+              infoMessage: 'exit'.tr(),
+              onPressedYes: () {
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              });
         },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet,color: Colors.black87),
-            backgroundColor: Colors.white10,
-            title: Text('io'.tr(), style: TextStyle(color: Colors.black)),
+        child: Scaffold(
+          backgroundColor: Colors.white12,
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _bottomNavIndex,
+            onTap: (index) async {
+              setState(() {
+                this._bottomNavIndex = index;
+              });
+              switch (index) {
+                case 0:
+                  Route route =
+                      MaterialPageRoute(builder: (context) => CashIn());
+                  Navigator.push(context, route);
+                  break;
+                case 1:
+                  final List<DateTime> picked =
+                      await DateRagePicker.showDatePicker(
+                          context: context,
+                          initialFirstDate: fd,
+                          //add(new Duration(days: DateTime.now().day)),
+                          initialLastDate: ld,
+                          //(new DateTime.now()).add(new Duration(days: 7)),
+                          firstDate: new DateTime(fy),
+                          lastDate: new DateTime(ly));
+                  if (picked != null && picked.length == 2) {
+                    setState(() {
+                      this.fd = picked.first;
+                      this.ld = picked.last;
+                    });
+                    dashboard();
+                  }
+                  break;
+                case 2:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Chart()),
+                  );
+                  break;
+                case 3:
+                  ConfirmAlertBox(
+                      context: context,
+                      title: 'warning'.tr(),
+                      infoMessage: 'logme'.tr(),
+                      onPressedYes: () {
+                        try {
+                          sp.clear();
+                          Route route = MaterialPageRoute(
+                              builder: (context) => Onboarding());
+                          Navigator.pushReplacement(context, route);
+                        } catch (e) {
+                          print(e);
+                        }
+                      });
+                  break;
+                case 4:
+                  ConfirmAlertBox(
+                      context: context,
+                      title: 'warning'.tr(),
+                      infoMessage: 'exit'.tr(),
+                      onPressedYes: () {
+                        SystemChannels.platform
+                            .invokeMethod('SystemNavigator.pop');
+                      });
+                  break;
+              }
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.account_balance_wallet, color: Colors.black87),
+                backgroundColor: Colors.white10,
+                title: Text('io'.tr(), style: TextStyle(color: Colors.black)),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_today, color: Colors.black87),
+                backgroundColor: Colors.white10,
+                title: Text('date'.tr(), style: TextStyle(color: Colors.black)),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.pie_chart, color: Colors.black87),
+                backgroundColor: Colors.white10,
+                title:
+                    Text('chart'.tr(), style: TextStyle(color: Colors.black)),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.block, color: Colors.black87),
+                backgroundColor: Colors.white10,
+                title:
+                    Text('logout'.tr(), style: TextStyle(color: Colors.black)),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.close, color: Colors.black87),
+                backgroundColor: Colors.white10,
+                title:
+                    Text('close'.tr(), style: TextStyle(color: Colors.black)),
+              )
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today,color: Colors.black87),
-            backgroundColor: Colors.white10,
-            title: Text('date'.tr(), style: TextStyle(color: Colors.black)),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pie_chart,color: Colors.black87),
-            backgroundColor: Colors.white10,
-            title: Text('chart'.tr(), style: TextStyle(color: Colors.black)),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.block,color: Colors.black87),
-            backgroundColor: Colors.white10,
-            title: Text('logout'.tr(), style: TextStyle(color: Colors.black)),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.close,color: Colors.black87),
-            backgroundColor: Colors.white10,
-            title: Text('close'.tr(), style: TextStyle(color: Colors.black)),
-          )
-        ],
-      ),
-      body: Column(
-        children: <Widget>[
-          Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 5.7,
-              color: Colors.green,
-              child: Column(children: <Widget>[
-                SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Avater(imageUrl),
-                        UserInfo(name, mobile),
-                      ],
+          body: Column(
+            children: <Widget>[
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height / 5.7,
+                  color: Colors.green,
+                  child: Column(children: <Widget>[
+                    SizedBox(
+                      height: 15,
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              isChecked = !isChecked;
-                              if (context.locale.toString().contains('en_US')) {
-                                context.locale = Locale('bn', 'BD');
-                              } else {
-                                context.locale = Locale('en', 'US');
-                              }
-                            });
-                          },
-                          child: Text(
-                            'ln'.tr(),
-                            style: TextStyle(
-                                color: Colors.white70,
-                                fontWeight: FontWeight.bold),
-                          ),
+                        Row(
+                          children: <Widget>[
+                            Avater(imageUrl),
+                            UserInfo(name, mobile),
+                          ],
                         ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            Route route = MaterialPageRoute(
-                                builder: (context) => ProfileUpdate());
-                            Navigator.push(context, route);
-                          },
-                          icon: Icon(
-                            Icons.person,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
+                        Row(
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  isChecked = !isChecked;
+                                  if (context.locale
+                                      .toString()
+                                      .contains('en_US')) {
+                                    context.locale = Locale('bn', 'BD');
+                                  } else {
+                                    context.locale = Locale('en', 'US');
+                                  }
+                                });
+                              },
+                              child: Text(
+                                'ln'.tr(),
+                                style: TextStyle(
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                Route route = MaterialPageRoute(
+                                    builder: (context) => ProfileUpdate());
+                                Navigator.push(context, route);
+                              },
+                              icon: Icon(
+                                Icons.person,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                          ],
+                        )
                       ],
-                    )
-                  ],
-                ),
-              ])),
-          walletTop(_amount, _cashIn, _cashOut, isChecked, context),
-          walletTab(tabIndex),
-          walletPost(tabIndex, list),
-        ],
-      ),
-      // floatingActionButton: FabCircularMenu(
-      //     fabColor: Colors.black12,
-      //     ringColor: Colors.pink,
-      //     ringWidth: 60,
-      //     ringDiameter: 300,
-      //     fabElevation: 0.0,
-      //     children: <Widget>[
-      //       IconButton(
-      //           icon: Icon(
-      //             Icons.settings_power,
-      //             color: Colors.white,
-      //           ),
-      //           onPressed: () {
-      //             SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-      //           }),
-      //       IconButton(
-      //           icon: Icon(
-      //             Icons.settings_backup_restore,
-      //             color: Colors.white,
-      //           ),
-      //           onPressed: () {
-      //             try {
-      //               sp.clear();
-      //               Navigator.pop(context);
-      //             } catch (e) {
-      //               print(e);
-      //             }
-      //           }),
-      //       IconButton(
-      //           icon: Icon(
-      //             Icons.insert_chart,
-      //             color: Colors.white,
-      //           ),
-      //           onPressed: () {
-      //             Navigator.push(
-      //               context,
-      //               MaterialPageRoute(builder: (context) => Chart()),
-      //             );
-      //           }),
-      //       IconButton(
-      //         onPressed: () {
-      //           Route route =
-      //               MaterialPageRoute(builder: (context) => ProfileUpdate());
-      //           Navigator.push(context, route);
-      //         },
-      //         icon: Icon(
-      //           Icons.person,
-      //           color: Colors.white,
-      //         ),
-      //       ),
-      //     ])
-    );
+                    ),
+                  ])),
+              walletTop(_amount, _cashIn, _cashOut, isChecked, context),
+              walletTab(tabIndex),
+              walletPost(tabIndex, list),
+            ],
+          ),
+          // floatingActionButton: FabCircularMenu(
+          //     fabColor: Colors.black12,
+          //     ringColor: Colors.pink,
+          //     ringWidth: 60,
+          //     ringDiameter: 300,
+          //     fabElevation: 0.0,
+          //     children: <Widget>[
+          //       IconButton(
+          //           icon: Icon(
+          //             Icons.settings_power,
+          //             color: Colors.white,
+          //           ),
+          //           onPressed: () {
+          //             SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+          //           }),
+          //       IconButton(
+          //           icon: Icon(
+          //             Icons.settings_backup_restore,
+          //             color: Colors.white,
+          //           ),
+          //           onPressed: () {
+          //             try {
+          //               sp.clear();
+          //               Navigator.pop(context);
+          //             } catch (e) {
+          //               print(e);
+          //             }
+          //           }),
+          //       IconButton(
+          //           icon: Icon(
+          //             Icons.insert_chart,
+          //             color: Colors.white,
+          //           ),
+          //           onPressed: () {
+          //             Navigator.push(
+          //               context,
+          //               MaterialPageRoute(builder: (context) => Chart()),
+          //             );
+          //           }),
+          //       IconButton(
+          //         onPressed: () {
+          //           Route route =
+          //               MaterialPageRoute(builder: (context) => ProfileUpdate());
+          //           Navigator.push(context, route);
+          //         },
+          //         icon: Icon(
+          //           Icons.person,
+          //           color: Colors.white,
+          //         ),
+          //       ),
+          //     ])
+        ));
   }
 
   Widget walletTab(tabIndex) => DefaultTabController(
@@ -488,8 +506,7 @@ Widget post(values, context) => Card(
       elevation: 1,
       child: InkWell(
           onDoubleTap: () {
-            Navigator.pop(context);
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => UpdateCash(id: values.documentID)),
@@ -533,13 +550,14 @@ Widget post(values, context) => Card(
                     width: 10,
                   ),
                   values['cashtype'] != 'OUT'
-                      ? Lottie.asset('images/add.json',width: 50,height: 50)
+                      ? Lottie.asset('images/add.json', width: 50, height: 50)
                       // Image.asset(
                       //   'images/save.jpg',
                       //   height: 50,
                       //   fit: BoxFit.fill,
                       // ),
-                      : Lottie.asset('images/minus.json',width: 45,height: 45),
+                      : Lottie.asset('images/minus.json',
+                          width: 45, height: 45),
                   // CircleAvatar(
                   //     backgroundColor: Colors.grey[100],
                   //     child: Image.asset(

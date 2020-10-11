@@ -157,9 +157,7 @@ class _CashInState extends State<CashIn> {
         type: ProgressDialogType.Normal, isDismissible: true);
     return WillPopScope(
         onWillPop: () {
-          Navigator.pop(context);
-          Route route = MaterialPageRoute(builder: (context) => Home());
-          Navigator.push(context, route);
+          Navigator.of(context).pop();
         },
         child: Scaffold(
           appBar: AppBar(

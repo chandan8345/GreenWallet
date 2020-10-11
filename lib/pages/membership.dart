@@ -90,7 +90,7 @@ class _MembershipState extends State<Membership> {
   Widget login() => RaisedButton(
         onPressed: () {
           Route route = MaterialPageRoute(builder: (context) => Log());
-          Navigator.pushReplacement(context, route);
+          Navigator.push(context, route);
         },
         textColor: Colors.white,
         padding: const EdgeInsets.all(0.0),
@@ -132,7 +132,7 @@ class _MembershipState extends State<Membership> {
   Widget register() => RaisedButton(
         onPressed: () {
           Route route = MaterialPageRoute(builder: (context) => Register());
-          Navigator.pushReplacement(context, route);
+          Navigator.push(context, route);
         },
         textColor: Colors.white,
         padding: const EdgeInsets.all(0.0),
