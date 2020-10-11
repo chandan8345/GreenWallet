@@ -179,7 +179,6 @@ class _HomeState extends State<Home> {
                     Navigator.of(context).pop();
                     Route route =
                         MaterialPageRoute(builder: (context) => Log());
-                    Navigator.pop(context, route);
                   });
               break;
             case 4:
@@ -225,7 +224,7 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 5.8,
+              height: MediaQuery.of(context).size.height / 5.7,
               color: Colors.green,
               child: Column(children: <Widget>[
                 SizedBox(
@@ -532,13 +531,13 @@ Widget post(values, context) => Card(
                     width: 10,
                   ),
                   values['cashtype'] != 'OUT'
-                      ? Lottie.asset('images/add.json')
+                      ? Lottie.asset('images/add.json',width: 50,height: 50)
                       // Image.asset(
                       //   'images/save.jpg',
                       //   height: 50,
                       //   fit: BoxFit.fill,
                       // ),
-                      : Lottie.asset('images/minus.json'),
+                      : Lottie.asset('images/minus.json',width: 50,height: 50),
                   // CircleAvatar(
                   //     backgroundColor: Colors.grey[100],
                   //     child: Image.asset(
