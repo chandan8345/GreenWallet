@@ -157,7 +157,9 @@ class _CashInState extends State<CashIn> {
         type: ProgressDialogType.Normal, isDismissible: true);
     return WillPopScope(
         onWillPop: () {
-          Navigator.of(context).pop();
+          Navigator.pop(context);
+          Route route = MaterialPageRoute(builder: (context) => Home());
+          Navigator.push(context, route);
         },
         child: Scaffold(
           appBar: AppBar(
@@ -176,26 +178,12 @@ class _CashInState extends State<CashIn> {
                       fontSize: 12),
                 ),
               ),
-              // IconButton(
-              //   onPressed: () {
-              //     if (context.locale.toString().contains('en_US')) {
-              //       context.locale = Locale('bn', 'BD');
-              //     } else {
-              //       context.locale = Locale('en', 'US');
-              //     }
-              //   },
-              //   icon: Text(
-              //     'ln'.tr(),
-              //     style: TextStyle(
-              //         color: Colors.white70,
-              //         fontWeight: FontWeight.bold,
-              //         fontSize: 12),
-              //   ),
-              // ),
             ],
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
+                Route route = MaterialPageRoute(builder: (context) => Home());
+                Navigator.push(context, route);
               },
               icon: Icon(Icons.arrow_back),
             ),

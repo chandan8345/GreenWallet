@@ -196,7 +196,9 @@ class _UpdateCashState extends State<UpdateCash> {
         type: ProgressDialogType.Normal, isDismissible: true);
     return WillPopScope(
         onWillPop: () {
-              Navigator.of(context).pop();
+          Navigator.pop(context);
+          Route route = MaterialPageRoute(builder: (context) => Home());
+          Navigator.push(context, route);
         },
         child: Scaffold(
           appBar: AppBar(
@@ -223,6 +225,8 @@ class _UpdateCashState extends State<UpdateCash> {
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
+                Route route = MaterialPageRoute(builder: (context) => Home());
+                Navigator.push(context, route);
               },
               icon: Icon(Icons.arrow_back),
             ),

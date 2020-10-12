@@ -7,7 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/pages/home.dart';
-import 'package:wallet/pages/onboarding.dart';
 import 'package:wallet/pages/recovery.dart';
 import 'package:wallet/pages/register.dart';
 import 'package:easy_localization/easy_localization.dart';

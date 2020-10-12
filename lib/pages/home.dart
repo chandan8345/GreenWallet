@@ -37,12 +37,13 @@ class _HomeState extends State<Home> {
   DateTime firstDate, lastDate, fd, ld;
 
   @override
-  void initState() {
+  Future<void> initState() {
     super.initState();
     SystemChannels.textInput.invokeMethod('TextInput.hide');
-    range();
     getUser();
-    dashboard();
+    range();
+    moneyin();
+    moneyout();
   }
 
   @override
@@ -71,51 +72,42 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Future<void> dashboard() async {
-    if (await ConnectionVerify.connectionStatus()) {
-      this._cashIn = 0.0;
+  Future<void> moneyin() async {
+    db
+        .collection('post')
+        .where('cashtype', isEqualTo: 'OUT')
+        .where('mobile', isEqualTo: mobile)
+        .where('date', isGreaterThanOrEqualTo: fd.toString())
+        .where('date', isLessThanOrEqualTo: ld.toString())
+        .snapshots()
+        .listen((snapshot) {
       this._cashOut = 0.0;
-      this._amount = 0.0;
-      db
-          .collection('post')
-          .where('cashtype', isEqualTo: 'IN')
-          .where('mobile', isEqualTo: mobile)
-          .where('date', isGreaterThanOrEqualTo: fd.toString())
-          .where('date', isLessThanOrEqualTo: ld.toString())
-          .snapshots()
-          .listen((snapshot) {
-        this._cashIn = 0.0;
-        snapshot.documents.forEach((doc) {
-          setState(() {
-            this._cashIn += double.parse(doc.data['amount']);
-          });
+      snapshot.documents.forEach((doc) {
+        setState(() {
+          this._cashOut += double.parse(doc.data['amount']);
         });
-        db
-            .collection('post')
-            .where('cashtype', isEqualTo: 'OUT')
-            .where('mobile', isEqualTo: mobile)
-            .where('date', isGreaterThanOrEqualTo: fd.toString())
-            .where('date', isLessThanOrEqualTo: ld.toString())
-            .snapshots()
-            .listen((snapshot) {
-          this._cashOut = 0.0;
-          snapshot.documents.forEach((doc) {
-            setState(() {
-              this._cashOut += double.parse(doc.data['amount']);
-            });
-          });
-          setState(() {
-            this._amount = _cashIn - _cashOut;
-          });
-        });
-        _amount != 0.0
-            ? print("amount not zero")
-            : this._amount = _cashIn - _cashOut;
       });
-    } else {
-      toast("connection_notify2".tr());
-      dashboard();
-    }
+      print(_cashOut);
+    });
+  }
+
+  Future<void> moneyout() async {
+    db
+        .collection('post')
+        .where('cashtype', isEqualTo: 'IN')
+        .where('mobile', isEqualTo: mobile)
+        .where('date', isGreaterThanOrEqualTo: fd.toString())
+        .where('date', isLessThanOrEqualTo: ld.toString())
+        .snapshots()
+        .listen((snapshot) {
+      this._cashIn = 0.0;
+      snapshot.documents.forEach((doc) {
+        setState(() {
+          this._cashIn += double.parse(doc.data['amount']);
+        });
+      });
+      print(_cashIn);
+    });
   }
 
   void toast(String text) {
@@ -151,6 +143,7 @@ class _HomeState extends State<Home> {
               });
               switch (index) {
                 case 0:
+                  Navigator.pop(context);
                   Route route =
                       MaterialPageRoute(builder: (context) => CashIn());
                   Navigator.push(context, route);
@@ -170,7 +163,8 @@ class _HomeState extends State<Home> {
                       this.fd = picked.first;
                       this.ld = picked.last;
                     });
-                    dashboard();
+                    moneyin();
+                    moneyout();
                   }
                   break;
                 case 2:
@@ -209,32 +203,32 @@ class _HomeState extends State<Home> {
             },
             items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.account_balance_wallet, color: Colors.black87),
-                backgroundColor: Colors.white10,
-                title: Text('io'.tr(), style: TextStyle(color: Colors.black)),
+                icon: Icon(Icons.account_balance_wallet, color: Colors.white),
+                backgroundColor: Colors.black54,
+                title: Text('io'.tr(), style: TextStyle(color: Colors.white)),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_today, color: Colors.black87),
-                backgroundColor: Colors.white10,
-                title: Text('date'.tr(), style: TextStyle(color: Colors.black)),
+                icon: Icon(Icons.calendar_today, color: Colors.white),
+                backgroundColor: Colors.black54,
+                title: Text('date'.tr(), style: TextStyle(color: Colors.white)),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.pie_chart, color: Colors.black87),
-                backgroundColor: Colors.white10,
+                icon: Icon(Icons.pie_chart, color: Colors.white),
+                backgroundColor: Colors.black54,
                 title:
-                    Text('chart'.tr(), style: TextStyle(color: Colors.black)),
+                    Text('chart'.tr(), style: TextStyle(color: Colors.white)),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.block, color: Colors.black87),
-                backgroundColor: Colors.white10,
+                icon: Icon(Icons.block, color: Colors.white),
+                backgroundColor: Colors.black54,
                 title:
-                    Text('logout'.tr(), style: TextStyle(color: Colors.black)),
+                    Text('logout'.tr(), style: TextStyle(color: Colors.white)),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.close, color: Colors.black87),
-                backgroundColor: Colors.white10,
+                icon: Icon(Icons.close, color: Colors.white),
+                backgroundColor: Colors.black54,
                 title:
-                    Text('close'.tr(), style: TextStyle(color: Colors.black)),
+                    Text('close'.tr(), style: TextStyle(color: Colors.white)),
               )
             ],
           ),
@@ -301,62 +295,12 @@ class _HomeState extends State<Home> {
                       ],
                     ),
                   ])),
-              walletTop(_amount, _cashIn, _cashOut, isChecked, context),
+              walletTop(
+                  _cashIn - _cashOut, _cashIn, _cashOut, isChecked, context),
               walletTab(tabIndex),
               walletPost(tabIndex, list),
             ],
           ),
-          // floatingActionButton: FabCircularMenu(
-          //     fabColor: Colors.black12,
-          //     ringColor: Colors.pink,
-          //     ringWidth: 60,
-          //     ringDiameter: 300,
-          //     fabElevation: 0.0,
-          //     children: <Widget>[
-          //       IconButton(
-          //           icon: Icon(
-          //             Icons.settings_power,
-          //             color: Colors.white,
-          //           ),
-          //           onPressed: () {
-          //             SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-          //           }),
-          //       IconButton(
-          //           icon: Icon(
-          //             Icons.settings_backup_restore,
-          //             color: Colors.white,
-          //           ),
-          //           onPressed: () {
-          //             try {
-          //               sp.clear();
-          //               Navigator.pop(context);
-          //             } catch (e) {
-          //               print(e);
-          //             }
-          //           }),
-          //       IconButton(
-          //           icon: Icon(
-          //             Icons.insert_chart,
-          //             color: Colors.white,
-          //           ),
-          //           onPressed: () {
-          //             Navigator.push(
-          //               context,
-          //               MaterialPageRoute(builder: (context) => Chart()),
-          //             );
-          //           }),
-          //       IconButton(
-          //         onPressed: () {
-          //           Route route =
-          //               MaterialPageRoute(builder: (context) => ProfileUpdate());
-          //           Navigator.push(context, route);
-          //         },
-          //         icon: Icon(
-          //           Icons.person,
-          //           color: Colors.white,
-          //         ),
-          //       ),
-          //     ])
         ));
   }
 
@@ -506,7 +450,8 @@ Widget post(values, context) => Card(
       elevation: 1,
       child: InkWell(
           onDoubleTap: () {
-            Navigator.pushReplacement(
+            Navigator.pop(context);
+            Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => UpdateCash(id: values.documentID)),
@@ -550,14 +495,25 @@ Widget post(values, context) => Card(
                     width: 10,
                   ),
                   values['cashtype'] != 'OUT'
-                      ? Lottie.asset('images/add.json', width: 50, height: 50)
+                      ? 
+                      CircleAvatar(
+                        child: Lottie.asset('images/add.json', width: 50, height: 50),
+                        backgroundColor: Colors.black12,
+                        radius: 25,
+                      )
                       // Image.asset(
                       //   'images/save.jpg',
                       //   height: 50,
                       //   fit: BoxFit.fill,
                       // ),
-                      : Lottie.asset('images/minus.json',
-                          width: 45, height: 45),
+                      : 
+                      CircleAvatar(
+                        child: 
+                      Lottie.asset('images/minus.json',
+                          width: 35, height: 40),
+                          backgroundColor: Colors.black12,
+                        radius: 25,
+                      ),
                   // CircleAvatar(
                   //     backgroundColor: Colors.grey[100],
                   //     child: Image.asset(
