@@ -498,9 +498,10 @@ Widget post(values, context) => Card(
                       ? 
                       CircleAvatar(
                         child: Lottie.asset('images/add.json', width: 50, height: 50),
-                        backgroundColor: Colors.black12,
+                        backgroundColor: Colors.blueGrey,
                         radius: 25,
                       )
+
                       // Image.asset(
                       //   'images/save.jpg',
                       //   height: 50,
@@ -511,7 +512,7 @@ Widget post(values, context) => Card(
                         child: 
                       Lottie.asset('images/minus.json',
                           width: 35, height: 40),
-                          backgroundColor: Colors.black12,
+                          backgroundColor: Colors.blueGrey,
                         radius: 25,
                       ),
                   // CircleAvatar(

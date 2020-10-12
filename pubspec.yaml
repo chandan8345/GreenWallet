@@ -34,6 +34,7 @@ dependencies:
   date_range_picker: ^1.0.5
   flutter_awesome_alert_box: ^1.0.1
   lottie: ^0.6.0
+  pull_to_refresh: ^1.6.2
 
 dev_dependencies:
   flutter_test:
