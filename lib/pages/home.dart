@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -134,7 +135,7 @@ class _HomeState extends State<Home> {
               });
         },
         child: Scaffold(
-          backgroundColor: Colors.white12,
+          backgroundColor: Colors.black12,
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _bottomNavIndex,
             onTap: (index) async {
@@ -143,10 +144,14 @@ class _HomeState extends State<Home> {
               });
               switch (index) {
                 case 0:
-                  Navigator.pop(context);
-                  Route route =
-                      MaterialPageRoute(builder: (context) => CashIn());
-                  Navigator.push(context, route);
+                  if (await ConnectionVerify.connectionStatus()) {
+                    Navigator.pop(context);
+                    Route route =
+                        MaterialPageRoute(builder: (context) => CashIn());
+                    Navigator.push(context, route);
+                  } else {
+                    toast('connection_notify2'.tr());
+                  }
                   break;
                 case 1:
                   final List<DateTime> picked =
@@ -203,32 +208,32 @@ class _HomeState extends State<Home> {
             },
             items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.account_balance_wallet, color: Colors.white),
-                backgroundColor: Colors.black54,
-                title: Text('io'.tr(), style: TextStyle(color: Colors.white)),
+                icon: Icon(Icons.account_balance_wallet, color: Colors.black87),
+                backgroundColor: Colors.white,
+                title: Text('io'.tr(), style: TextStyle(color: Colors.black)),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_today, color: Colors.white),
-                backgroundColor: Colors.black54,
-                title: Text('date'.tr(), style: TextStyle(color: Colors.white)),
+                icon: Icon(Icons.calendar_today, color: Colors.black87),
+                backgroundColor: Colors.white,
+                title: Text('date'.tr(), style: TextStyle(color: Colors.black)),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.pie_chart, color: Colors.white),
-                backgroundColor: Colors.black54,
+                icon: Icon(Icons.pie_chart, color: Colors.black87),
+                backgroundColor: Colors.white,
                 title:
-                    Text('chart'.tr(), style: TextStyle(color: Colors.white)),
+                    Text('chart'.tr(), style: TextStyle(color: Colors.black)),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.block, color: Colors.white),
-                backgroundColor: Colors.black54,
+                icon: Icon(Icons.block, color: Colors.black87),
+                backgroundColor: Colors.white,
                 title:
-                    Text('logout'.tr(), style: TextStyle(color: Colors.white)),
+                    Text('logout'.tr(), style: TextStyle(color: Colors.black)),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.close, color: Colors.white),
-                backgroundColor: Colors.black54,
+                icon: Icon(Icons.close, color: Colors.black87),
+                backgroundColor: Colors.white,
                 title:
-                    Text('close'.tr(), style: TextStyle(color: Colors.white)),
+                    Text('close'.tr(), style: TextStyle(color: Colors.black)),
               )
             ],
           ),
@@ -236,7 +241,7 @@ class _HomeState extends State<Home> {
             children: <Widget>[
               Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 5.7,
+                  height: MediaQuery.of(context).size.height / 6,
                   color: Colors.green,
                   child: Column(children: <Widget>[
                     SizedBox(
@@ -269,8 +274,8 @@ class _HomeState extends State<Home> {
                               child: Text(
                                 'ln'.tr(),
                                 style: TextStyle(
-                                    color: Colors.white70,
-                                    fontWeight: FontWeight.bold),
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.normal),
                               ),
                             ),
                             SizedBox(
@@ -319,19 +324,22 @@ class _HomeState extends State<Home> {
                 Tab(
                   child: Text(
                     'statement',
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(
+                        color: Colors.black, fontStyle: FontStyle.italic),
                   ).tr(),
                 ),
                 Tab(
                   child: Text(
                     'cashin'.tr(),
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(
+                        color: Colors.black, fontStyle: FontStyle.italic),
                   ),
                 ),
                 Tab(
                   child: Text(
                     'cashout'.tr(),
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(
+                        color: Colors.black, fontStyle: FontStyle.italic),
                   ),
                 )
               ],
@@ -495,26 +503,24 @@ Widget post(values, context) => Card(
                     width: 10,
                   ),
                   values['cashtype'] != 'OUT'
-                      ? 
-                      CircleAvatar(
-                        child: Lottie.asset('images/add.json', width: 50, height: 50),
-                        backgroundColor: Colors.blueGrey,
-                        radius: 25,
-                      )
+                      ? CircleAvatar(
+                          child: Lottie.asset('images/add.json',
+                              width: 50, height: 50),
+                          backgroundColor: Colors.white10,
+                          radius: 25,
+                        )
 
                       // Image.asset(
                       //   'images/save.jpg',
                       //   height: 50,
                       //   fit: BoxFit.fill,
                       // ),
-                      : 
-                      CircleAvatar(
-                        child: 
-                      Lottie.asset('images/minus.json',
-                          width: 35, height: 40),
-                          backgroundColor: Colors.blueGrey,
-                        radius: 25,
-                      ),
+                      : CircleAvatar(
+                          child: Lottie.asset('images/minus.json',
+                              width: 35, height: 40),
+                          backgroundColor: Colors.white10,
+                          radius: 25,
+                        ),
                   // CircleAvatar(
                   //     backgroundColor: Colors.grey[100],
                   //     child: Image.asset(
@@ -597,14 +603,22 @@ class inOut extends StatelessWidget {
             Text(
               '+ $cashIn ৳',
               style: TextStyle(
-                fontSize: 24,
-                color: Colors.white,
-              ),
+                  fontSize: 24,
+                  color: Colors.white,
+                  fontStyle: FontStyle.italic),
             ),
-            Text(
-              'cashin'.tr(),
-              style: TextStyle(fontSize: 10, color: Colors.white60),
-            ),
+            FadeAnimatedTextKit(
+                text: [
+                  'cashin'.tr(),
+                ],
+                textStyle: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                    fontStyle: FontStyle.italic),
+                textAlign: TextAlign.start,
+                repeatForever: true,
+                alignment: AlignmentDirectional.topStart // or Alignment.topLeft
+                ),
           ],
         )),
         Expanded(
@@ -614,14 +628,22 @@ class inOut extends StatelessWidget {
             Text(
               '- $cashOut ৳',
               style: TextStyle(
-                fontSize: 24,
-                color: Colors.white,
-              ),
+                  fontSize: 24,
+                  color: Colors.white,
+                  fontStyle: FontStyle.italic),
             ),
-            Text(
-              'cashout'.tr(),
-              style: TextStyle(fontSize: 10, color: Colors.white60),
-            ),
+            FadeAnimatedTextKit(
+                text: [
+                  'cashout'.tr(),
+                ],
+                textStyle: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                    fontStyle: FontStyle.italic),
+                textAlign: TextAlign.start,
+                repeatForever: true,
+                alignment: AlignmentDirectional.topStart // or Alignment.topLeft
+                ),
           ],
         )),
       ],
@@ -639,12 +661,21 @@ class balance extends StatelessWidget {
         children: <Widget>[
           Text(
             '$amount ৳',
-            style: TextStyle(fontSize: 32, color: Colors.white),
+            style: TextStyle(
+                fontSize: 32, color: Colors.white, fontStyle: FontStyle.italic),
           ),
-          Text(
-            'balance'.tr(),
-            style: TextStyle(fontSize: 10, color: Colors.white60),
-          ),
+          FadeAnimatedTextKit(
+              text: [
+                'balance'.tr(),
+              ],
+              textStyle: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontStyle: FontStyle.italic),
+              textAlign: TextAlign.start,
+              repeatForever: true,
+              alignment: AlignmentDirectional.topStart // or Alignment.topLeft
+              ),
         ],
       ),
     );
@@ -665,11 +696,13 @@ class UserInfo extends StatelessWidget {
         children: <Widget>[
           Text(
             '$name',
-            style: TextStyle(fontSize: 16, color: Colors.white),
+            style: TextStyle(
+                fontSize: 16, color: Colors.white, fontStyle: FontStyle.italic),
           ),
           Text(
             '$mobile',
-            style: TextStyle(fontSize: 12, color: Colors.white),
+            style: TextStyle(
+                fontSize: 12, color: Colors.white, fontStyle: FontStyle.italic),
           ),
         ],
       ),
