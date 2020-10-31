@@ -93,7 +93,7 @@ class _ChartState extends State<Chart> {
   range() {
     DateTime now = DateTime.now();
     setState(() {
-      this.firstDate = now.subtract(Duration(days: now.day - 1));
+      this.firstDate = DateTime.parse("2020-01-01 01:01:01");
       this.lastDate = now;
       this.fd = firstDate;
       this.ld = lastDate;
