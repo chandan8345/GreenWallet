@@ -2,7 +2,7 @@ name: wallet
 description: Green Wallet.
 
 
-version: 1.0.0+28
+version: 1.0.0+29
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

@@ -394,7 +394,7 @@ class _CashInState extends State<CashIn> {
               'house_rent'.tr()),
           CashIn(
               Icon(
-                Icons.card_giftcard,
+                Icons.add_call,
                 size: 70,
               ),
               3,

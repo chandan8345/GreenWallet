@@ -135,7 +135,7 @@ class _HomeState extends State<Home> {
               });
         },
         child: Scaffold(
-          backgroundColor: Colors.black12,
+          backgroundColor: Colors.white,
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _bottomNavIndex,
             onTap: (index) async {
@@ -208,29 +208,29 @@ class _HomeState extends State<Home> {
             },
             items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.account_balance_wallet, color: Colors.black87),
+                icon: Icon(Icons.account_balance_wallet, color: Colors.green),
                 backgroundColor: Colors.white,
                 title: Text('io'.tr(), style: TextStyle(color: Colors.black)),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_today, color: Colors.black87),
+                icon: Icon(Icons.calendar_today, color: Colors.green),
                 backgroundColor: Colors.white,
                 title: Text('date'.tr(), style: TextStyle(color: Colors.black)),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.pie_chart, color: Colors.black87),
+                icon: Icon(Icons.pie_chart, color: Colors.green),
                 backgroundColor: Colors.white,
                 title:
                     Text('chart'.tr(), style: TextStyle(color: Colors.black)),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.block, color: Colors.black87),
+                icon: Icon(Icons.block, color: Colors.green),
                 backgroundColor: Colors.white,
                 title:
                     Text('logout'.tr(), style: TextStyle(color: Colors.black)),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.close, color: Colors.black87),
+                icon: Icon(Icons.close, color: Colors.green),
                 backgroundColor: Colors.white,
                 title:
                     Text('close'.tr(), style: TextStyle(color: Colors.black)),
@@ -455,7 +455,8 @@ class _HomeState extends State<Home> {
 }
 
 Widget post(values, context) => Card(
-      elevation: 1,
+      elevation: 2,
+      color: Colors.grey,
       child: InkWell(
           onDoubleTap: () {
             Navigator.pop(context);
@@ -506,7 +507,7 @@ Widget post(values, context) => Card(
                       ? CircleAvatar(
                           child: Lottie.asset('images/add.json',
                               width: 50, height: 50),
-                          backgroundColor: Colors.white10,
+                          backgroundColor: Colors.white,
                           radius: 25,
                         )
 
@@ -518,7 +519,7 @@ Widget post(values, context) => Card(
                       : CircleAvatar(
                           child: Lottie.asset('images/minus.json',
                               width: 35, height: 40),
-                          backgroundColor: Colors.white10,
+                          backgroundColor: Colors.white,
                           radius: 25,
                         ),
                   // CircleAvatar(
